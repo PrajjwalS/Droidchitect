@@ -2,7 +2,7 @@ Development Phases
 
 ---
 
-## Phase 1 — USB Foundation
+## Phase 1 — USB Foundation -> DONE!
 
 ### Goals:
 
@@ -13,7 +13,7 @@ Development Phases
 
 ---
 
-## Phase 2 — Protocol Understanding
+## Phase 2 — Protocol Understanding -> DONE!
 
 ### Goals:
 
@@ -27,7 +27,7 @@ Development Phases
 
 ---
 
-## Phase 3 — Basic Control UI
+## Phase 3 — Basic Control UI -> TODO
 
 ### Goals:
 
