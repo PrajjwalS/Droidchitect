@@ -8,7 +8,7 @@ public final class BlackstarConstants {
     public static final int VENDOR_ID  = 0x27D4;
     public static final int PRODUCT_ID = 0x0013;
 
-    // ===== Indecies ======
+    // ===== Indices ======
     public static final class Index {
         public static final int REPORT_ID = 0;
         public static final int PARAM_ID  = 1;

@@ -175,7 +175,6 @@ public class BlackstarDecoder {
     private static void parseStateDump(byte[] data, AmpState state) {
 
         // architect-linux: value = data[paramId + 3]
-
         state.amplifier.voice     = u(data[Param.VOICE + 3]);
         state.amplifier.gain      = u(data[Param.GAIN + 3]);
         state.amplifier.volume    = u(data[Param.VOLUME + 3]);
