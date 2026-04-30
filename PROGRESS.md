@@ -27,7 +27,7 @@ Development Phases
 
 ---
 
-## Phase 3 — Basic Control UI -> TODO
+## Phase 3 — Basic Control UI -> OnGoing!
 
 ### Goals:
 

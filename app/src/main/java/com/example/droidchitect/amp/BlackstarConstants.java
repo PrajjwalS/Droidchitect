@@ -1,4 +1,4 @@
-package com.example.droidchitect.amp_protocol;
+package com.example.droidchitect.amp;
 
 public final class BlackstarConstants {
 

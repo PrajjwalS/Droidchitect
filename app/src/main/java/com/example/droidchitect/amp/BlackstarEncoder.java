@@ -1,6 +1,6 @@
-package com.example.droidchitect.amp_protocol;
+package com.example.droidchitect.amp;
 
-import static com.example.droidchitect.amp_protocol.BlackstarConstants.*;
+import static com.example.droidchitect.amp.BlackstarConstants.*;
 
 public class BlackstarEncoder {
 

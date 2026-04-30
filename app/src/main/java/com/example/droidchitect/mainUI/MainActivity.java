@@ -10,15 +10,31 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droidchitect.R;
-import com.example.droidchitect.amp_protocol.AmpState;
+import com.example.droidchitect.amp.AmpController;
+import com.example.droidchitect.amp.AmpState;
 import com.example.droidchitect.usb.UsbConnectionManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements UsbConnectionManager.ConnectionListener {
 
     private static final String TAG = "DROIDCHITECT_UI";
 
     private UsbConnectionManager usbConnectionManager;
     private AmpState ampState = new AmpState();
+
+    private AmpController controller;
+
+    @Override
+    public void onConnected() {
+        Log.d(TAG, "UI notified: USB connected");
+        // safe to use controller now
+
+    }
+
+    @Override
+    public void onDisconnected() {
+        Log.d(TAG, "UI notified: USB disconnected");
+    }
 
     // This receiver is our gateway to understand USB events.
     private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
@@ -43,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         usbConnectionManager = new UsbConnectionManager(this, ampState);
+        usbConnectionManager.setConnectionListener(this);
+        controller = new AmpController(usbConnectionManager);
 
         Button btn = findViewById(R.id.btn_connect);
         btn.setOnClickListener(v -> usbConnectionManager.detectAndConnect());

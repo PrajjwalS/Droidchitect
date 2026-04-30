@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.hardware.usb.*;
 import android.util.Log;
 
-import com.example.droidchitect.amp_protocol.*;
+import com.example.droidchitect.amp.*;
 
 import java.util.HashMap;
 
@@ -32,6 +32,18 @@ public class UsbConnectionManager {
     private Thread readThread;
 
     private UsbDevice pendingDevice;
+
+    private ConnectionListener listener;
+    // Interface to signal MainActivity (UI) that connection is established
+    public interface ConnectionListener {
+        void onConnected();
+        void onDisconnected();
+    }
+
+    public void setConnectionListener(ConnectionListener listener) {
+        this.listener = listener;
+    }
+
 
     public UsbConnectionManager(Context ctx, AmpState state) {
         this.contextRef = ctx;
@@ -210,11 +222,13 @@ public class UsbConnectionManager {
 
         startReading();
         // INIT (0x81)
-        try {Thread.sleep(5000);} catch (InterruptedException ignored) {}
         Log.d(TAG, "Sending Init Message to AMP");
         send(BlackstarEncoder.buildOutsiderInit());
 
-        // Mark connection success
+        // Now signal MainActivity that connection is up .. and amp can be controlled now
+        if (listener != null) {
+            listener.onConnected();
+        }
 
     }
 
@@ -233,6 +247,11 @@ public class UsbConnectionManager {
         }
 
         context = null;
+
+        // signal MainActivity that connection is gone now, dont use Amp Controls
+        if (listener != null) {
+            listener.onDisconnected();
+        }
     }
 
     private void startReading() {
