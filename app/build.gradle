@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'com.example.droidchitect'
+    namespace = 'com.example.droidchitect'
     compileSdk 36
 
     defaultConfig {
@@ -27,7 +27,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     buildFeatures {
-        viewBinding true
+        viewBinding = true
     }
 }
 
@@ -41,4 +41,5 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    implementation 'com.github.ahmmedrejowan:RotaryKnob:0.1'
 }

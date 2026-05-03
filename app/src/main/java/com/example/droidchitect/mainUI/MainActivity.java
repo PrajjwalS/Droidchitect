@@ -13,6 +13,7 @@ import com.example.droidchitect.R;
 import com.example.droidchitect.amp.AmpController;
 import com.example.droidchitect.amp.AmpState;
 import com.example.droidchitect.usb.UsbConnectionManager;
+import com.rejowan.rotaryknob.RotaryKnob;
 
 public class MainActivity extends AppCompatActivity
         implements UsbConnectionManager.ConnectionListener {
@@ -62,8 +63,14 @@ public class MainActivity extends AppCompatActivity
         usbConnectionManager.setConnectionListener(this);
         controller = new AmpController(usbConnectionManager);
 
-        Button btn = findViewById(R.id.btn_connect);
-        btn.setOnClickListener(v -> usbConnectionManager.detectAndConnect());
+        //Button btn = findViewById(R.id.btn_connect);
+        //btn.setOnClickListener(v -> usbConnectionManager.detectAndConnect());
+
+        RotaryKnob knob = findViewById(R.id.knob_test);
+
+        knob.setProgressChangeListener(progress -> {
+            Log.d("KNOB", "Value: " + progress);
+        });
 
         registerUsbReceiver();
     }
@@ -76,7 +83,8 @@ public class MainActivity extends AppCompatActivity
 
         if (Build.VERSION.SDK_INT >= 26) {
             registerReceiver(usbReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
+        }
+        else {
             registerReceiver(usbReceiver, filter);
         }
     }

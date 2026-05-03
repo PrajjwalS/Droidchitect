@@ -1,14 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#000000">
 
-    <Button
-        android:id="@+id/btn_connect"
-        android:layout_width="wrap_content"
+    <!-- ================= TOP NAV ================= -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Connect to Amp"/>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/tab_amp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="AMP"/>
+
+        <Button
+            android:id="@+id/tab_effects"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="EFFECTS"/>
+
+        <Button
+            android:id="@+id/tab_live"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="LIVE"/>
+    </LinearLayout>
+
+    <!-- ================= CONTENT ================= -->
+    <LinearLayout
+        android:id="@+id/page_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- TEST KNOB -->
+        <com.rejowan.rotaryknob.RotaryKnob
+            android:id="@+id/knob_test"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            
+
+            app:min="0"
+            app:max="127"
+            app:current_progress="60"
+
+            app:label_text="VOLUME"
+            app:show_label="true"
+            app:show_progress_text="true"
+
+            app:circle_style="solid"
+            app:circle_color="#1E1E1E"
+
+            app:progress_style="circle"
+            app:progress_filled_color="#FF7A00"
+
+            app:indicator_style="line"
+            app:indicator_color="#FF7A00"/>
+
+    </LinearLayout>
 
 </LinearLayout>
