@@ -99,4 +99,42 @@ public class AmpState {
                 "]";
 
     }
+
+    // ================= AMPLIFIER SETTERS =================
+
+    public void setVoice(int value) {
+        amplifier.voice = value;
+    }
+
+    public void setGain(int value) {
+        amplifier.gain = value;
+    }
+
+    public void setVolume(int value) {
+        amplifier.volume = value;
+    }
+
+    public void setBass(int value) {
+        amplifier.bass = value;
+    }
+
+    public void setMiddle(int value) {
+        amplifier.middle = value;
+    }
+
+    public void setTreble(int value) {
+        amplifier.treble = value;
+    }
+
+    public void setIsf(int value) {
+        amplifier.isf = value;
+    }
+
+    public void setPresence(int value) {
+        amplifier.presence = value;
+    }
+
+    public void setResonance(int value) {
+        amplifier.resonance = value;
+    }
 }

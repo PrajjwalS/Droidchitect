@@ -20,14 +20,18 @@
             android:layout_weight="1"
             android:text="Droidchitect"
             android:textColor="#FF7A00"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_connect"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Connect"/>
+            android:layout_height="36dp"
+            android:text="Connect Amp"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:backgroundTint="#FF7A00"
+            android:paddingHorizontal="16dp"/>
 
         <TextView
             android:id="@+id/status"
@@ -39,7 +43,7 @@
     </LinearLayout>
 
 
-    <!-- ================= VOICE GRID (2 x 3) ================= -->
+    <!-- ================= VOICE GRID (2 x 3 UNIFORM) ================= -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,40 +54,58 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            >
 
             <Button
                 android:id="@+id/voice_clean_warm"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="Clean Warm"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:layout_margin="4dp"
-                android:backgroundTint="#1f1f1f"/>
+                android:backgroundTint="#1f1f1f"
+                android:gravity="center"
+                android:lines="2"
+                android:ellipsize="end"
+                android:textAlignment="center"
+                android:includeFontPadding="false"/>
 
             <Button
                 android:id="@+id/voice_clean_bright"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="Clean Bright"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:layout_margin="4dp"
-                android:backgroundTint="#1f1f1f"/>
+                android:backgroundTint="#1f1f1f"
+                android:gravity="center"
+                android:lines="2"
+                android:ellipsize="end"
+                android:textAlignment="center"
+                android:includeFontPadding="false"/>
 
             <Button
                 android:id="@+id/voice_crunch"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="Crunch"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:layout_margin="4dp"
-                android:backgroundTint="#1f1f1f"/>
+                android:backgroundTint="#1f1f1f"
+                android:gravity="center"
+                android:lines="2"
+                android:ellipsize="end"
+                android:textAlignment="center"
+                android:includeFontPadding="false"/>
 
         </LinearLayout>
 
@@ -91,40 +113,59 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            >
+
 
             <Button
                 android:id="@+id/voice_super_crunch"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="Super Crunch"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:layout_margin="4dp"
-                android:backgroundTint="#1f1f1f"/>
+                android:backgroundTint="#1f1f1f"
+                android:gravity="center"
+                android:lines="2"
+                android:ellipsize="end"
+                android:textAlignment="center"
+                android:includeFontPadding="false"/>
 
             <Button
                 android:id="@+id/voice_od1"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="OD1"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:layout_margin="4dp"
-                android:backgroundTint="#1f1f1f"/>
+                android:backgroundTint="#1f1f1f"
+                android:gravity="center"
+                android:lines="2"
+                android:ellipsize="end"
+                android:textAlignment="center"
+                android:includeFontPadding="false"/>
 
             <Button
                 android:id="@+id/voice_od2"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="OD2"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:layout_margin="4dp"
-                android:backgroundTint="#1f1f1f"/>
+                android:backgroundTint="#1f1f1f"
+                android:gravity="center"
+                android:lines="2"
+                android:ellipsize="end"
+                android:textAlignment="center"
+                android:includeFontPadding="false"/>
 
         </LinearLayout>
 
@@ -139,115 +180,7 @@
         android:orientation="vertical">
 
 
-        <!-- ROW 1 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
 
-            <!-- Repeat 4 knobs -->
-            <com.rejowan.rotaryknob.RotaryKnob
-                android:id="@+id/knob_gain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:layout_margin="2dp"
-                android:padding="8dp"
-                app:label_text="GAIN"
-                app:min="0"
-                app:max="127"
-
-                app:show_label="true"
-                app:show_progress_text="true"
-                app:label_margin="@dimen/knob_label_margin"
-                app:circle_style="gradient"
-                app:circle_gradient_outer_color="#121212"
-                app:circle_gradient_center_color="#2A2A2A"
-
-                app:border_color="#2A2A2A"
-
-                app:progress_style="circle"
-                app:progress_color="#2A2A2A"
-                app:progress_filled_color="#FF7A00"
-
-                app:show_big_progress="false"
-                app:progress_text_size="16dp"
-                app:current_progress="120"
-                app:indicator_style="line"
-                app:indicator_color="#FF7A00"
-
-
-                />
-
-
-            <com.rejowan.rotaryknob.RotaryKnob
-                android:id="@+id/knob_volume"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:layout_margin="2dp"
-                android:padding="8dp"
-                app:label_text="VOLUME"
-                app:min="0"
-                app:max="127"
-                app:show_label="true"
-                app:show_progress_text="true"
-                app:label_margin="@dimen/knob_label_margin"
-                app:circle_style="gradient"
-                app:circle_gradient_outer_color="#121212"
-                app:circle_gradient_center_color="#2A2A2A"
-
-                app:border_color="#2A2A2A"
-
-                app:progress_style="circle"
-                app:progress_color="#2A2A2A"
-                app:progress_filled_color="#FF7A00"
-
-                app:show_big_progress="false"
-                app:progress_text_size="16dp"
-                app:current_progress="120"
-                app:indicator_style="line"
-                app:indicator_color="#FF7A00"
-
-                />
-
-
-            <com.rejowan.rotaryknob.RotaryKnob
-                android:id="@+id/knob_middle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:layout_margin="2dp"
-                android:padding="8dp"
-                app:label_text="MIDDLE"
-                app:min="0"
-                app:max="127"
-                app:show_label="true"
-                app:show_progress_text="true"
-                app:label_margin="@dimen/knob_label_margin"
-                app:circle_style="gradient"
-                app:circle_gradient_outer_color="#121212"
-                app:circle_gradient_center_color="#2A2A2A"
-
-                app:border_color="#2A2A2A"
-
-                app:progress_style="circle"
-                app:progress_color="#2A2A2A"
-                app:progress_filled_color="#FF7A00"
-
-                app:show_big_progress="false"
-                app:progress_text_size="16dp"
-                app:current_progress="120"
-                app:indicator_style="line"
-                app:indicator_color="#FF7A00"
-
-                />
-
-        </LinearLayout>
 
         <!-- ROW 2 -->
         <LinearLayout
@@ -255,6 +188,69 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_bass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                app:label_margin="@dimen/knob_label_margin"
+                app:label_text="BASS"
+                app:max="127"
+                app:min="0"
+                app:show_label="true"
+                app:show_progress_text="true"
+
+                app:circle_style="gradient"
+                app:circle_gradient_outer_color="#121212"
+                app:circle_gradient_center_color="#2A2A2A"
+
+                app:border_color="#2A2A2A"
+
+                app:progress_style="circle"
+                app:progress_color="#2A2A2A"
+                app:progress_filled_color="#FF7A00"
+
+                app:show_big_progress="false"
+                app:progress_text_size="16dp"
+                app:current_progress="120"
+                app:indicator_style="line"
+                app:indicator_color="#FF7A00"
+                />
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_middle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                app:label_margin="@dimen/knob_label_margin"
+                app:label_text="MIDDLE"
+                app:max="127"
+                app:min="0"
+                app:show_label="true"
+                app:show_progress_text="true"
+                app:circle_style="gradient"
+                app:circle_gradient_outer_color="#121212"
+                app:circle_gradient_center_color="#2A2A2A"
+
+                app:border_color="#2A2A2A"
+
+                app:progress_style="circle"
+                app:progress_color="#2A2A2A"
+                app:progress_filled_color="#FF7A00"
+
+                app:show_big_progress="false"
+                app:progress_text_size="16dp"
+                app:current_progress="120"
+                app:indicator_style="line"
+                app:indicator_color="#FF7A00"
+                />
 
             <com.rejowan.rotaryknob.RotaryKnob
                 android:id="@+id/knob_treble"
@@ -270,7 +266,6 @@
                 app:min="0"
                 app:show_label="true"
                 app:show_progress_text="true"
-
                 app:circle_style="gradient"
                 app:circle_gradient_outer_color="#121212"
                 app:circle_gradient_center_color="#2A2A2A"
@@ -288,20 +283,31 @@
                 app:indicator_color="#FF7A00"
                 />
 
+        </LinearLayout>
+
+        <!-- ROW 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <!-- Repeat 4 knobs -->
             <com.rejowan.rotaryknob.RotaryKnob
                 android:id="@+id/knob_isf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="2dp"
                 android:layout_weight="1"
+                android:layout_margin="2dp"
                 android:padding="8dp"
-                app:label_margin="@dimen/knob_label_margin"
                 app:label_text="ISF"
-                app:max="127"
                 app:min="0"
+                app:max="127"
+
                 app:show_label="true"
                 app:show_progress_text="true"
+                app:label_margin="@dimen/knob_label_margin"
                 app:circle_style="gradient"
                 app:circle_gradient_outer_color="#121212"
                 app:circle_gradient_center_color="#2A2A2A"
@@ -317,23 +323,23 @@
                 app:current_progress="120"
                 app:indicator_style="line"
                 app:indicator_color="#FF7A00"
-
                 />
+
 
             <com.rejowan.rotaryknob.RotaryKnob
                 android:id="@+id/knob_presence"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="10dp"
                 android:layout_weight="1"
+                android:layout_margin="2dp"
                 android:padding="8dp"
-                app:label_margin="@dimen/knob_label_margin"
                 app:label_text="PRESENCE"
-                app:max="127"
                 app:min="0"
+                app:max="127"
                 app:show_label="true"
                 app:show_progress_text="true"
+                app:label_margin="@dimen/knob_label_margin"
                 app:circle_style="gradient"
                 app:circle_gradient_outer_color="#121212"
                 app:circle_gradient_center_color="#2A2A2A"
@@ -353,8 +359,40 @@
                 />
 
 
-        </LinearLayout>
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_resonance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:padding="8dp"
+                app:label_text="RESONANCE"
+                app:min="0"
+                app:max="127"
+                app:show_label="true"
+                app:show_progress_text="true"
+                app:label_margin="@dimen/knob_label_margin"
+                app:circle_style="gradient"
+                app:circle_gradient_outer_color="#121212"
+                app:circle_gradient_center_color="#2A2A2A"
 
+                app:border_color="#2A2A2A"
+
+                app:progress_style="circle"
+                app:progress_color="#2A2A2A"
+                app:progress_filled_color="#FF7A00"
+
+                app:show_big_progress="false"
+                app:progress_text_size="16dp"
+                app:current_progress="120"
+                app:indicator_style="line"
+                app:indicator_color="#FF7A00"
+
+                />
+
+        </LinearLayout>
+        <!-- ROW 3 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -362,7 +400,7 @@
             android:orientation="horizontal">
 
             <com.rejowan.rotaryknob.RotaryKnob
-                android:id="@+id/knob_treble2"
+                android:id="@+id/knob_gain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -370,7 +408,7 @@
                 android:layout_weight="1"
                 android:padding="8dp"
                 app:label_margin="@dimen/knob_label_margin"
-                app:label_text="TREBLE"
+                app:label_text="GAIN"
                 app:max="127"
                 app:min="0"
                 app:show_label="true"
@@ -394,7 +432,7 @@
                 />
 
             <com.rejowan.rotaryknob.RotaryKnob
-                android:id="@+id/knob_isf2"
+                android:id="@+id/knob_volume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -402,7 +440,7 @@
                 android:layout_weight="1"
                 android:padding="8dp"
                 app:label_margin="@dimen/knob_label_margin"
-                app:label_text="ISF"
+                app:label_text="VOLUME"
                 app:max="127"
                 app:min="0"
                 app:show_label="true"
@@ -424,23 +462,19 @@
                 app:indicator_color="#FF7A00"
 
                 />
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-
         </LinearLayout>
+
 
     </LinearLayout>
 
     <!-- ================= BOTTOM NAV BAR ================= -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="64dp"
         android:layout_margin="10dp"
         android:background="#1A1A1A"
         android:orientation="horizontal"
-        android:padding="4dp"
+        android:padding="6dp"
         android:gravity="center"
         android:elevation="8dp"
         android:clipToPadding="false"
@@ -472,7 +506,7 @@
             android:gravity="center"
             android:text="EFFECTS"
             android:textColor="#AAAAAA"
-            android:textStyle="bold"
+            android:textStyle="normal"
             android:background="@android:color/transparent"/>
         <View
             android:layout_width="1dp"
@@ -488,7 +522,7 @@
             android:gravity="center"
             android:text="PATCH"
             android:textColor="#AAAAAA"
-            android:textStyle="bold"
+            android:textStyle="normal"
             android:background="@android:color/transparent"/>
 
     </LinearLayout>
