@@ -6,44 +6,6 @@
     android:orientation="vertical"
     android:background="@drawable/bg_main"
     android:padding="8dp">
-
-
-    <!-- ================= TOP BAR ================= -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Droidchitect"
-            android:textColor="#FF7A00"
-            android:textSize="25sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btn_connect"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:text="Connect Amp"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:backgroundTint="#FF7A00"
-            android:paddingHorizontal="16dp"/>
-
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Disconnected"
-            android:textColor="#AAAAAA"
-            android:layout_marginStart="6dp"/>
-    </LinearLayout>
-
-
     <!-- ================= VOICE GRID (2 x 3 UNIFORM) ================= -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -463,68 +425,5 @@
 
                 />
         </LinearLayout>
-
-
     </LinearLayout>
-
-    <!-- ================= BOTTOM NAV BAR ================= -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_margin="10dp"
-        android:background="#1A1A1A"
-        android:orientation="horizontal"
-        android:padding="6dp"
-        android:gravity="center"
-        android:elevation="8dp"
-        android:clipToPadding="false"
-        android:clipChildren="false"
-        android:weightSum="3">
-
-        <!-- AMP -->
-        <TextView
-            android:id="@+id/tab_amp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="AMP"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:background="@drawable/nav_selected_bg"/>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:background="#2A2A2A"/>
-        <!-- EFFECTS -->
-        <TextView
-            android:id="@+id/tab_effects"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="EFFECTS"
-            android:textColor="#AAAAAA"
-            android:textStyle="normal"
-            android:background="@android:color/transparent"/>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:background="#2A2A2A"/>
-        <!-- PATCH -->
-        <TextView
-            android:id="@+id/tab_live"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="PATCH"
-            android:textColor="#AAAAAA"
-            android:textStyle="normal"
-            android:background="@android:color/transparent"/>
-
-    </LinearLayout>
-
 </LinearLayout>

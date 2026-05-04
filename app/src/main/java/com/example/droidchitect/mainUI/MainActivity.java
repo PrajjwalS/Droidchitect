@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,11 +28,23 @@ public class MainActivity extends AppCompatActivity
 
     private TextView status;
 
+    private boolean isRestoringAmpPageUI = false;
+
     // ================= CONNECTION =================
     @Override
     public void onConnected() {
         Log.d(TAG, "USB Connected");
         status.setText("Connected");
+        while(!ampState.isInitial_init_done()){ //
+             Log.d(TAG, "Waiting for amp to get initiated with amp settings");
+            try {
+                Thread.sleep(500); // 500 ms delay
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
+
+        refreshAmpPageUI();
     }
 
     @Override
@@ -54,22 +67,100 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
+    boolean amp_page_initiated = false;
+    private void loadPage(int layoutId) {
+        FrameLayout container = findViewById(R.id.main_container);
+
+        container.removeAllViews();
+        getLayoutInflater().inflate(layoutId, container, true);
+
+        if (layoutId == R.layout.amp_page) {
+
+            initKnobs();
+            initVoices();
+
+
+            // Restore UI (or set it to whatever ampstate has right now)
+            refreshAmpPageUI();
+        }
+    };
+
+    private void refreshAmpPageUI() {
+        isRestoringAmpPageUI = true;
+        applyStateToUI();
+        applyVoiceToUI();
+        isRestoringAmpPageUI = false;
+    };
+    private void applyStateToUI() {
+
+        // Convert AMP (0–127) → UI (0–100)
+        int gain = (int) Math.round(ampState.getGain() * 100.0 / 127.0);
+        int volume = (int) Math.round(ampState.getVolume() * 100.0 / 127.0);
+        int bass = (int) Math.round(ampState.getBass() * 100.0 / 127.0);
+        int middle = (int) Math.round(ampState.getMiddle() * 100.0 / 127.0);
+        int treble = (int) Math.round(ampState.getTreble() * 100.0 / 127.0);
+        int isf = (int) Math.round(ampState.getIsf() * 100.0 / 127.0);
+        int presence = (int) Math.round(ampState.getPresence() * 100.0 / 127.0);
+        int resonance = (int) Math.round(ampState.getResonance() * 100.0 / 127.0);
+
+        ((RotaryKnob) findViewById(R.id.knob_gain)).setCurrentProgress(gain);
+        ((RotaryKnob) findViewById(R.id.knob_volume)).setCurrentProgress(volume);
+        ((RotaryKnob) findViewById(R.id.knob_bass)).setCurrentProgress(bass);
+        ((RotaryKnob) findViewById(R.id.knob_middle)).setCurrentProgress(middle);
+        ((RotaryKnob) findViewById(R.id.knob_treble)).setCurrentProgress(treble);
+        ((RotaryKnob) findViewById(R.id.knob_isf)).setCurrentProgress(isf);
+        ((RotaryKnob) findViewById(R.id.knob_presence)).setCurrentProgress(presence);
+        ((RotaryKnob) findViewById(R.id.knob_resonance)).setCurrentProgress(resonance);
+    };
+
+    private void applyVoiceToUI() {
+
+        int voice = ampState.getVoice();
+
+        Button cleanWarm = findViewById(R.id.voice_clean_warm);
+        Button cleanBright = findViewById(R.id.voice_clean_bright);
+        Button crunch = findViewById(R.id.voice_crunch);
+        Button superCrunch = findViewById(R.id.voice_super_crunch);
+        Button od1 = findViewById(R.id.voice_od1);
+        Button od2 = findViewById(R.id.voice_od2);
+
+        Button[] all = {cleanWarm, cleanBright, crunch, superCrunch, od1, od2};
+
+        // reset all
+        for (Button b : all) {
+            b.setBackgroundTintList(
+                    getColorStateList(R.color.voice_button_gray)
+            );
+        }
+
+        // highlight selected
+        if (voice >= 0 && voice < all.length) {
+            all[voice].setBackgroundTintList(
+                    getColorStateList(R.color.orange)
+            );
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 🔥 IMPORTANT
-        setContentView(R.layout.amp_page);
+
+        setContentView(R.layout.activity_main);
+        loadPage(R.layout.amp_page);
+        initTopBar();
+        initTabs();
 
         usbConnectionManager = new UsbConnectionManager(this, ampState);
         usbConnectionManager.setConnectionListener(this);
         controller = new AmpController(usbConnectionManager);
 
-        initTopBar();
-        initKnobs();
-        initVoices();
-        initTabs();
+
+
+        //initTopBar();
+        //initKnobs();
+        //initVoices();
+        //initTabs();
 
         registerUsbReceiver();
     }
@@ -133,8 +224,9 @@ public class MainActivity extends AppCompatActivity
 
         knob.setProgressChangeListener(value -> {
 
-            int adjusted = value;
+            if (isRestoringAmpPageUI) return; // 🔥 ignore restore updates
 
+            int adjusted = value;
             // 🔥 Expand edge zones (UI scale: 0–100)
             // This makes the knobs more finger friendly.
             //     ... I wish I had used sliders, but knobs are looking cool for now.
@@ -150,7 +242,7 @@ public class MainActivity extends AppCompatActivity
             // 🔥 Convert to amp value (0–127)
             int ampValue = (int) Math.round(adjusted * 127.0 / 100.0);
 
-            callback.onChange(ampValue); // direct
+            callback.onChange(ampValue);
         });
     }
 
@@ -208,9 +300,20 @@ public class MainActivity extends AppCompatActivity
         TextView effects = findViewById(R.id.tab_effects);
         TextView patch = findViewById(R.id.tab_live);
 
-        amp.setOnClickListener(v -> selectTab(amp, effects, patch));
-        effects.setOnClickListener(v -> selectTab(effects, amp, patch));
-        patch.setOnClickListener(v -> selectTab(patch, amp, effects));
+        amp.setOnClickListener(v -> {
+            selectTab(amp, effects, patch);
+            loadPage(R.layout.amp_page);
+        });
+
+        effects.setOnClickListener(v -> {
+            selectTab(effects, amp, patch);
+            loadPage(R.layout.effects_page);
+        });
+
+        patch.setOnClickListener(v -> {
+            selectTab(patch, amp, effects);
+            loadPage(R.layout.patch_page);
+        });
     }
 
     private void selectTab(TextView selected, TextView t2, TextView t3) {

@@ -2,9 +2,17 @@ package com.example.droidchitect.amp;
 
 public class AmpState {
 
+    private boolean initial_init_done = false;
     public Amplifier amplifier = new Amplifier();
     public Effects effects = new Effects();
 
+    public boolean isInitial_init_done() {
+        return initial_init_done;
+    }
+
+    public void setInitial_init_done(boolean x) {
+        initial_init_done = x;
+    }
     public static class Amplifier {
         public int voice;
         public int gain;
@@ -136,5 +144,41 @@ public class AmpState {
 
     public void setResonance(int value) {
         amplifier.resonance = value;
+    }
+
+    public int getVoice() {
+        return amplifier.voice;
+    }
+
+    public int getGain() {
+        return amplifier.gain;
+    }
+
+    public int getVolume() {
+        return amplifier.volume;
+    }
+
+    public int getBass() {
+        return amplifier.bass;
+    }
+
+    public int getMiddle() {
+        return amplifier.middle;
+    }
+
+    public int getTreble() {
+        return amplifier.treble;
+    }
+
+    public int getIsf() {
+        return amplifier.isf;
+    }
+
+    public int getPresence() {
+        return amplifier.presence;
+    }
+
+    public int getResonance() {
+        return amplifier.resonance;
     }
 }

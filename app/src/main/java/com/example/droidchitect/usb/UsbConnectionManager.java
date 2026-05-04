@@ -225,6 +225,8 @@ public class UsbConnectionManager {
         Log.d(TAG, "Sending Init Message to AMP");
         send(BlackstarEncoder.buildOutsiderInit());
 
+        // wait for sometime to let the AMPstate get fixed.
+
         // Now signal MainActivity that connection is up .. and amp can be controlled now
         if (listener != null) {
             listener.onConnected();
@@ -237,10 +239,13 @@ public class UsbConnectionManager {
         if (state == ConnectionState.DISCONNECTED) return;
 
         Log.d(TAG, "USB DISCONNECT");
+        ampState.setInitial_init_done(false);
+        stopReading();
 
         state = ConnectionState.DISCONNECTED;
 
-        stopReading();
+
+
 
         if (context != null && context.connection != null) {
             context.connection.close();
@@ -274,6 +279,9 @@ public class UsbConnectionManager {
                     BlackstarDecoder.decode(buffer, bytesRead, ampState);
                     // Log structured state
                     Log.d(TAG, "STATE: " + ampState);
+                    if (!ampState.isInitial_init_done()) {
+                        ampState.setInitial_init_done(true);
+                    }
                 }
 
                 // IMPORTANT:
