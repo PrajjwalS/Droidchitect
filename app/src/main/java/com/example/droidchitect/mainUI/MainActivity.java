@@ -99,23 +99,22 @@ public class MainActivity extends AppCompatActivity
 
         setupKnob(R.id.knob_bass, value -> {
             ampState.setBass(value);
-            //controller.setBass(value); // TODO
+            controller.setBass(value);
         });
 
         setupKnob(R.id.knob_middle, value -> {
             ampState.setMiddle(value);
-            //controller.setMiddle(value); // TODO
-
+            controller.setMiddle(value);
         });
 
         setupKnob(R.id.knob_treble, value -> {
             ampState.setTreble(value);
-            //controller.setTre(value); // TODO
+            controller.setTreble(value);
         });
 
         setupKnob(R.id.knob_isf, value -> {
             ampState.setIsf(value);
-            controller.setISF(value);
+            controller.setIsf(value);
         });
 
         setupKnob(R.id.knob_presence, value -> {
@@ -133,8 +132,25 @@ public class MainActivity extends AppCompatActivity
         RotaryKnob knob = findViewById(id);
 
         knob.setProgressChangeListener(value -> {
-            Log.d(TAG, "Knob " + id + " -> " + value);
-            callback.onChange(value);
+
+            int adjusted = value;
+
+            // 🔥 Expand edge zones (UI scale: 0–100)
+            // This makes the knobs more finger friendly.
+            //     ... I wish I had used sliders, but knobs are looking cool for now.
+            if (value <= 3) adjusted = 0;
+            else if (value >= 97) adjusted = 100;
+
+            // 🔥 Force knob UI to reflect snapped value
+            if (adjusted != value) {
+                knob.setCurrentProgress(adjusted);
+                return;
+            }
+
+            // 🔥 Convert to amp value (0–127)
+            int ampValue = (int) Math.round(adjusted * 127.0 / 100.0);
+
+            callback.onChange(ampValue); // direct
         });
     }
 

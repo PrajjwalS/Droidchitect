@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#000000"
+    android:background="@drawable/bg_main"
     android:padding="8dp">
+
 
     <!-- ================= TOP BAR ================= -->
     <LinearLayout
@@ -179,15 +180,13 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-
-
-
-        <!-- ROW 2 -->
+        <!-- ROW 1 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
+
 
             <com.rejowan.rotaryknob.RotaryKnob
                 android:id="@+id/knob_bass"
@@ -199,7 +198,7 @@
                 android:padding="8dp"
                 app:label_margin="@dimen/knob_label_margin"
                 app:label_text="BASS"
-                app:max="127"
+                app:max="100"
                 app:min="0"
                 app:show_label="true"
                 app:show_progress_text="true"
@@ -216,7 +215,7 @@
 
                 app:show_big_progress="false"
                 app:progress_text_size="16dp"
-                app:current_progress="120"
+                app:current_progress="50"
                 app:indicator_style="line"
                 app:indicator_color="#FF7A00"
                 />
@@ -231,7 +230,7 @@
                 android:padding="8dp"
                 app:label_margin="@dimen/knob_label_margin"
                 app:label_text="MIDDLE"
-                app:max="127"
+                app:max="100"
                 app:min="0"
                 app:show_label="true"
                 app:show_progress_text="true"
@@ -247,7 +246,7 @@
 
                 app:show_big_progress="false"
                 app:progress_text_size="16dp"
-                app:current_progress="120"
+                app:current_progress="50"
                 app:indicator_style="line"
                 app:indicator_color="#FF7A00"
                 />
@@ -262,7 +261,7 @@
                 android:padding="8dp"
                 app:label_margin="@dimen/knob_label_margin"
                 app:label_text="TREBLE"
-                app:max="127"
+                app:max="100"
                 app:min="0"
                 app:show_label="true"
                 app:show_progress_text="true"
@@ -278,14 +277,14 @@
 
                 app:show_big_progress="false"
                 app:progress_text_size="16dp"
-                app:current_progress="120"
+                app:current_progress="50"
                 app:indicator_style="line"
                 app:indicator_color="#FF7A00"
                 />
 
         </LinearLayout>
 
-        <!-- ROW 1 -->
+        <!-- ROW 2 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -302,8 +301,8 @@
                 android:layout_margin="2dp"
                 android:padding="8dp"
                 app:label_text="ISF"
+                app:max="100"
                 app:min="0"
-                app:max="127"
 
                 app:show_label="true"
                 app:show_progress_text="true"
@@ -320,7 +319,7 @@
 
                 app:show_big_progress="false"
                 app:progress_text_size="16dp"
-                app:current_progress="120"
+                app:current_progress="50"
                 app:indicator_style="line"
                 app:indicator_color="#FF7A00"
                 />
@@ -335,14 +334,15 @@
                 android:layout_margin="2dp"
                 android:padding="8dp"
                 app:label_text="PRESENCE"
+                app:max="100"
                 app:min="0"
-                app:max="127"
                 app:show_label="true"
                 app:show_progress_text="true"
                 app:label_margin="@dimen/knob_label_margin"
                 app:circle_style="gradient"
                 app:circle_gradient_outer_color="#121212"
                 app:circle_gradient_center_color="#2A2A2A"
+
 
                 app:border_color="#2A2A2A"
 
@@ -352,7 +352,7 @@
 
                 app:show_big_progress="false"
                 app:progress_text_size="16dp"
-                app:current_progress="120"
+                app:current_progress="50"
                 app:indicator_style="line"
                 app:indicator_color="#FF7A00"
 
@@ -368,8 +368,8 @@
                 android:layout_margin="2dp"
                 android:padding="8dp"
                 app:label_text="RESONANCE"
+                app:max="100"
                 app:min="0"
-                app:max="127"
                 app:show_label="true"
                 app:show_progress_text="true"
                 app:label_margin="@dimen/knob_label_margin"
@@ -385,13 +385,13 @@
 
                 app:show_big_progress="false"
                 app:progress_text_size="16dp"
-                app:current_progress="120"
+                app:current_progress="50"
                 app:indicator_style="line"
                 app:indicator_color="#FF7A00"
 
                 />
-
         </LinearLayout>
+
         <!-- ROW 3 -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -409,7 +409,7 @@
                 android:padding="8dp"
                 app:label_margin="@dimen/knob_label_margin"
                 app:label_text="GAIN"
-                app:max="127"
+                app:max="100"
                 app:min="0"
                 app:show_label="true"
                 app:show_progress_text="true"
@@ -426,7 +426,7 @@
 
                 app:show_big_progress="false"
                 app:progress_text_size="16dp"
-                app:current_progress="120"
+                app:current_progress="50"
                 app:indicator_style="line"
                 app:indicator_color="#FF7A00"
                 />
@@ -441,7 +441,7 @@
                 android:padding="8dp"
                 app:label_margin="@dimen/knob_label_margin"
                 app:label_text="VOLUME"
-                app:max="127"
+                app:max="100"
                 app:min="0"
                 app:show_label="true"
                 app:show_progress_text="true"
@@ -457,7 +457,7 @@
 
                 app:show_big_progress="false"
                 app:progress_text_size="16dp"
-                app:current_progress="120"
+                app:current_progress="50"
                 app:indicator_style="line"
                 app:indicator_color="#FF7A00"
 

@@ -47,7 +47,7 @@ public class AmpController {
         ));
     }
 
-    public void setISF(int value) {
+    public void setIsf(int value) {
         send(BlackstarEncoder.buildParam(
                 BlackstarConstants.Param.ISF,
                 BlackstarConstants.CONTEXT_PATCH,
@@ -70,6 +70,31 @@ public class AmpController {
                 clamp(value, 0, 127)
         ));
     }
+
+    public void setBass(int value) {
+        send(BlackstarEncoder.buildParam(
+                BlackstarConstants.Param.BASS,
+                BlackstarConstants.CONTEXT_PATCH,
+                clamp(value, 0, 127)
+        ));
+    }
+
+    public void setMiddle(int value) {
+        send(BlackstarEncoder.buildParam(
+                BlackstarConstants.Param.MIDDLE,
+                BlackstarConstants.CONTEXT_PATCH,
+                clamp(value, 0, 127)
+        ));
+    }
+
+    public void setTreble(int value) {
+        send(BlackstarEncoder.buildParam(
+                BlackstarConstants.Param.TREBLE,
+                BlackstarConstants.CONTEXT_PATCH,
+                clamp(value, 0, 127)
+        ));
+    }
+
 
     // ===== EFFECTS =====
 
