@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity
         implements UsbConnectionManager.ConnectionListener {
 
     private static final String TAG = "DROIDCHITECT_UI";
+    private static final String DEBUG_TAG = "WEIRD";
 
     private UsbConnectionManager usbConnectionManager;
     private AmpController controller;
@@ -30,21 +31,18 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isRestoringAmpPageUI = false;
 
-    // ================= CONNECTION =================
+
+    /* ------------------------- USB CONNECTION LISTENERS ---------------------------- */
+    /* These are the events we listen to from USB Connection Manager
+     *
+     * 1) On Connected        - when USB Connection is Made with all permissions to the Amp.
+     * 2) On Disconnected     - when USB Connection is yanked away to the Amp
+     * 3) On Amp State Change - when Amp State changes (software/hardware related config change).
+     * */
     @Override
     public void onConnected() {
         Log.d(TAG, "USB Connected");
         status.setText("Connected");
-        while(!ampState.isInitial_init_done()){ //
-             Log.d(TAG, "Waiting for amp to get initiated with amp settings");
-            try {
-                Thread.sleep(500); // 500 ms delay
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        };
-
-        refreshAmpPageUI();
     }
 
     @Override
@@ -53,6 +51,28 @@ public class MainActivity extends AppCompatActivity
         status.setText("Disconnected");
     }
 
+    @Override
+    public void onAmpStateUpdated() {
+
+        runOnUiThread(() -> {
+
+            // only update if amp page visible
+            // I would like to have this isAmpPageVisible coming from UI object actually TODO
+            if (isAmpPageVisible()) {
+                refreshAmpPageUI();
+            }
+
+            Log.d(TAG, "UI refreshed from hardware state");
+            Log.d(DEBUG_TAG, "UI refreshed from state change read");
+        });
+    }
+    private boolean isAmpPageVisible() {
+        return findViewById(R.id.knob_gain) != null;
+    }
+    /* -------------------------------------------------------------- */
+
+
+    /* ------------------------ USB Handlers ------------------------ */
     private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -67,7 +87,56 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
-    boolean amp_page_initiated = false;
+
+    private void registerUsbReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(UsbConnectionManager.ACTION_USB_PERMISSION);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            registerReceiver(usbReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(usbReceiver, filter);
+        }
+    }
+    /* -------------------------------------------------------------- */
+
+
+    /* ------------ MAIN PART (Create and Destroy handlers) -------------- */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Setup The First Page. TODO Move this to new UI?
+        setContentView(R.layout.activity_main);
+        loadPage(R.layout.amp_page);
+        initTopBar();
+        initTabs();
+
+        // Create the USB Connection Manager (This)
+        usbConnectionManager = new UsbConnectionManager(this, ampState);
+        usbConnectionManager.setConnectionListener(this);
+
+        // Create the AMP Controller stitched with the USB Connection
+        controller = new AmpController(usbConnectionManager);
+
+        // Register USB Receiver
+        registerUsbReceiver();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        try { unregisterReceiver(usbReceiver); } catch (Exception ignored) {}
+
+        usbConnectionManager.disconnect();
+    }
+    /* -------------------------------------------------------------- */
+
+
+    /* EVERY THING BELOW IS FOR UI */
+
     private void loadPage(int layoutId) {
         FrameLayout container = findViewById(R.id.main_container);
 
@@ -81,12 +150,14 @@ public class MainActivity extends AppCompatActivity
 
 
             // Restore UI (or set it to whatever ampstate has right now)
-            refreshAmpPageUI();
+            //refreshAmpPageUI();
         }
     };
 
     private void refreshAmpPageUI() {
         isRestoringAmpPageUI = true;
+        Log.d(DEBUG_TAG, "refreshAmpPageUI called");
+
         applyStateToUI();
         applyVoiceToUI();
         isRestoringAmpPageUI = false;
@@ -102,6 +173,8 @@ public class MainActivity extends AppCompatActivity
         int isf = (int) Math.round(ampState.getIsf() * 100.0 / 127.0);
         int presence = (int) Math.round(ampState.getPresence() * 100.0 / 127.0);
         int resonance = (int) Math.round(ampState.getResonance() * 100.0 / 127.0);
+
+        Log.d(DEBUG_TAG, "Changing Gain to: " +gain);
 
         ((RotaryKnob) findViewById(R.id.knob_gain)).setCurrentProgress(gain);
         ((RotaryKnob) findViewById(R.id.knob_volume)).setCurrentProgress(volume);
@@ -141,29 +214,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-
-        setContentView(R.layout.activity_main);
-        loadPage(R.layout.amp_page);
-        initTopBar();
-        initTabs();
-
-        usbConnectionManager = new UsbConnectionManager(this, ampState);
-        usbConnectionManager.setConnectionListener(this);
-        controller = new AmpController(usbConnectionManager);
-
-
-
-        //initTopBar();
-        //initKnobs();
-        //initVoices();
-        //initTabs();
-
-        registerUsbReceiver();
-    }
 
     // ================= TOP BAR =================
     private void initTopBar() {
@@ -179,43 +230,52 @@ public class MainActivity extends AppCompatActivity
     private void initKnobs() {
 
         setupKnob(R.id.knob_gain, value -> {
-            ampState.setGain(value);
-            controller.setGain(value);
+            //ampState.setGain(value);
+            if (ampState.getGain() != value) {
+                controller.setGain(value);
+            }
         });
 
         setupKnob(R.id.knob_volume, value -> {
-            ampState.setVolume(value);
-            controller.setVolume(value);
+            if (ampState.getVolume() != value) {
+                controller.setVolume(value);
+            }
         });
 
         setupKnob(R.id.knob_bass, value -> {
-            ampState.setBass(value);
-            controller.setBass(value);
+            if (ampState.getBass() != value) {
+                controller.setBass(value);
+            }
         });
 
         setupKnob(R.id.knob_middle, value -> {
-            ampState.setMiddle(value);
-            controller.setMiddle(value);
+            if (ampState.getMiddle() != value) {
+                controller.setMiddle(value);
+            }
         });
 
         setupKnob(R.id.knob_treble, value -> {
-            ampState.setTreble(value);
-            controller.setTreble(value);
+            if (ampState.getTreble() != value) {
+                controller.setTreble(value);
+            }
         });
 
         setupKnob(R.id.knob_isf, value -> {
-            ampState.setIsf(value);
-            controller.setIsf(value);
+            if (ampState.getIsf() != value) {
+                controller.setIsf(value);
+            }
         });
 
         setupKnob(R.id.knob_presence, value -> {
-            ampState.setPresence(value);
-            controller.setPresence(value);
+            if (ampState.getPresence() != value) {
+                controller.setPresence(value);
+            }
         });
 
         setupKnob(R.id.knob_resonance, value -> {
-            ampState.setResonance(value);
-            controller.setResonance(value);
+            if (ampState.getResonance() != value) {
+                controller.setResonance(value);
+            }
         });
     }
 
@@ -235,6 +295,9 @@ public class MainActivity extends AppCompatActivity
 
             // 🔥 Force knob UI to reflect snapped value
             if (adjusted != value) {
+                if (knob.getLabelText() == "Voice") {
+                    Log.d(DEBUG_TAG, "VOICE KNOB - " + adjusted + "  " + value);
+                }
                 knob.setCurrentProgress(adjusted);
                 return;
             }
@@ -286,8 +349,9 @@ public class MainActivity extends AppCompatActivity
             );
 
             // Logic
-            ampState.setVoice(voiceIndex);
-            controller.setVoice(voiceIndex);
+            if (ampState.getVoice() != voiceIndex) {
+                controller.setVoice(voiceIndex);
+            }
 
             Log.d(TAG, "Voice -> " + voiceIndex);
         });
@@ -336,25 +400,6 @@ public class MainActivity extends AppCompatActivity
         t.setBackgroundColor(getColor(android.R.color.transparent));
     }
 
-    // ================= USB =================
-    private void registerUsbReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbConnectionManager.ACTION_USB_PERMISSION);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            registerReceiver(usbReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(usbReceiver, filter);
-        }
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        try { unregisterReceiver(usbReceiver); } catch (Exception ignored) {}
-
-        usbConnectionManager.disconnect();
-    }
 }

@@ -13,10 +13,8 @@ import java.util.HashMap;
 public class UsbConnectionManager {
 
     private static final String TAG = "USB_MANAGER";
-
     public static final String ACTION_USB_PERMISSION =
             "com.example.droidchitect.USB_PERMISSION";
-
     private static final int VENDOR_ID = 0x27D4;
     private static final int PRODUCT_ID = 0x0013;
 
@@ -38,6 +36,7 @@ public class UsbConnectionManager {
     public interface ConnectionListener {
         void onConnected();
         void onDisconnected();
+        void onAmpStateUpdated();
     }
 
     public void setConnectionListener(ConnectionListener listener) {
@@ -239,7 +238,6 @@ public class UsbConnectionManager {
         if (state == ConnectionState.DISCONNECTED) return;
 
         Log.d(TAG, "USB DISCONNECT");
-        ampState.setInitial_init_done(false);
         stopReading();
 
         state = ConnectionState.DISCONNECTED;
@@ -279,9 +277,18 @@ public class UsbConnectionManager {
                     BlackstarDecoder.decode(buffer, bytesRead, ampState);
                     // Log structured state
                     Log.d(TAG, "STATE: " + ampState);
-                    if (!ampState.isInitial_init_done()) {
-                        ampState.setInitial_init_done(true);
-                    }
+
+                    //  send event trigger for AmpState Update, this shall refresh the UI Page.
+                    //   NOTE - if you use the knobs on the hardware this state updates gets too jittery
+                    //   making the UI flicker slightly (but it settles after sometime)
+                    //   maybe fix this to have more premium stable feel ... some logic
+                    //   although why the hell you are using the hardware knobs when you have the full app with you.
+                    //    (maybe some people might like it ... anyway it works .. just jittery sometimes.)
+                    // Suggestion .. maybe maybe a threshold level chaning might help? like only change if
+                    //               delta is more than 10 ? TODO
+                    //               OR to be honest .. just live with this .. it is real and it works.
+                    //                  and to be honest it is common for hand touched knobs.
+                    listener.onAmpStateUpdated();
                 }
 
                 // IMPORTANT:

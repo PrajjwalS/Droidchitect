@@ -1,18 +1,9 @@
 package com.example.droidchitect.amp;
 
 public class AmpState {
-
-    private boolean initial_init_done = false;
     public Amplifier amplifier = new Amplifier();
     public Effects effects = new Effects();
 
-    public boolean isInitial_init_done() {
-        return initial_init_done;
-    }
-
-    public void setInitial_init_done(boolean x) {
-        initial_init_done = x;
-    }
     public static class Amplifier {
         public int voice;
         public int gain;
