@@ -105,10 +105,11 @@ public class MainActivity extends AppCompatActivity
 
             String action = intent.getAction();
 
-            if (UsbConnectionManager.ACTION_USB_PERMISSION.equals(action)) {
+            if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+                usbConnectionManager.detectAndConnect();
+            } else if (UsbConnectionManager.ACTION_USB_PERMISSION.equals(action)) {
                 usbConnectionManager.handlePermissionResult();
-            }
-            else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+            } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 usbConnectionManager.handleDeviceDetached();
             }
         }
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity
 
     private void registerUsbReceiver() {
         IntentFilter filter = new IntentFilter();
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbConnectionManager.ACTION_USB_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 
@@ -182,7 +184,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectClicked() {
-        usbConnectionManager.detectAndConnect();
+        //usbConnectionManager.detectAndConnect();
     }
     /* -------------------------------------------------------------- */
 
@@ -211,6 +213,9 @@ public class MainActivity extends AppCompatActivity
 
         // register usb receiver ... this ultimately starts the USB manager functionality.
         registerUsbReceiver();
+
+        // Try Finding the device
+        usbConnectionManager.detectAndConnect();
     }
 
     @Override

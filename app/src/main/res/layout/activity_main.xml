@@ -24,23 +24,24 @@
             android:textSize="25sp"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btn_connect"
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/status_chip"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="Connect Amp"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:backgroundTint="#FF7A00"
-            android:paddingHorizontal="16dp"/>
-
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Disconnected"
+            android:textAllCaps="false"
             android:textColor="#AAAAAA"
-            android:layout_marginStart="6dp"/>
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:clickable="false"
+            android:focusable="false"
+            app:backgroundTint="#1F1F1F"
+            app:cornerRadius="18dp"/>
+
     </LinearLayout>
 
     <!-- 🔥 PAGE CONTAINER -->

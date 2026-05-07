@@ -1,5 +1,7 @@
 package com.example.droidchitect.mainUI;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,21 +25,18 @@ public class ShellController {
     private final TextView tabEffects;
     private final TextView tabPatch;
 
-    private final TextView status;
+    private final TextView statusChip;
 
     public ShellController(View root, NavigationListener listener) {
 
         this.root = root;
         this.listener = listener;
 
-        Button connect = root.findViewById(R.id.btn_connect);
-        status = root.findViewById(R.id.status);
+        statusChip = root.findViewById(R.id.status_chip);
 
         tabAmp = root.findViewById(R.id.tab_amp);
         tabEffects = root.findViewById(R.id.tab_effects);
         tabPatch = root.findViewById(R.id.tab_live);
-
-        connect.setOnClickListener(v -> listener.onConnectClicked());
 
         tabAmp.setOnClickListener(v -> {
             selectAmp();
@@ -57,7 +56,35 @@ public class ShellController {
 
     // ================= STATUS =================
     public void setConnected(boolean connected) {
-        status.setText(connected ? "Connected" : "Disconnected");
+
+        if (connected) {
+
+            statusChip.setText("Connected");
+
+            statusChip.setTextColor(
+                    Color.WHITE
+            );
+
+            statusChip.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                            Color.parseColor("#FF7A00")
+                    )
+            );
+
+        } else {
+
+            statusChip.setText("Disconnected");
+
+            statusChip.setTextColor(
+                    Color.parseColor("#AAAAAA")
+            );
+
+            statusChip.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                            Color.parseColor("#1F1F1F")
+                    )
+            );
+        }
     }
 
     // ================= TAB STATES =================
