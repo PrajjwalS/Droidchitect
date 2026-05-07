@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.*;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.droidchitect.amp.*;
 
@@ -65,6 +66,11 @@ public class UsbConnectionManager {
         UsbDevice device = findTargetDevice();
 
         if (device == null) {
+            Toast.makeText(
+                    contextRef,
+                    "Blackstar Amp not found.\nPlug it in and switch it ON.",
+                    Toast.LENGTH_LONG
+            ).show();
             Log.d(TAG, "Target device not found.");
             return;
         }
@@ -93,6 +99,12 @@ public class UsbConnectionManager {
         if (granted) {
             connect(pendingDevice);
         } else {
+            Toast.makeText(
+                    contextRef,
+                    "Cannot Connect To Amp, Permission Not Granted.",
+                    Toast.LENGTH_LONG
+            ).show();
+
             Log.d(TAG, "Permission denied.");
         }
 
@@ -100,6 +112,11 @@ public class UsbConnectionManager {
     }
 
     public void handleDeviceDetached() {
+        Toast.makeText(
+                contextRef,
+                "Blackstar Amp disconnected.",
+                Toast.LENGTH_LONG
+        ).show();
         Log.d(TAG, "Device detached");
         disconnect();
     }
@@ -204,6 +221,11 @@ public class UsbConnectionManager {
 
         // Mark connection established
         state = ConnectionState.CONNECTED;
+        Toast.makeText(
+                contextRef,
+                "Blackstar AMP Connected.",
+                Toast.LENGTH_LONG
+        ).show();
         Log.d(TAG, "USB CONNECTED");
 
 
