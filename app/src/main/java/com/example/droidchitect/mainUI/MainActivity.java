@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     private TextView status;
     private AmpPageController ampPageController;
     private ShellController shellController;
+    private EffectsPageController effectsPageController;
 
     enum Page {
         AMP,
@@ -89,7 +90,10 @@ public class MainActivity extends AppCompatActivity
             // I would like to have this isAmpPageVisible coming from UI object actually TODO
             if (currentPage == Page.AMP && ampPageController != null) {
                 ampPageController.refresh();
+            } else if (currentPage == Page.EFFECTS && ampPageController != null) {
+                effectsPageController.refresh();
             }
+
 
             Log.d(TAG, "UI refreshed from state change read");
         });
@@ -158,7 +162,11 @@ public class MainActivity extends AppCompatActivity
             ampPageController.init();
 
         } else if (layoutId == R.layout.effects_page) {
+
             currentPage = Page.EFFECTS;
+            effectsPageController = new EffectsPageController(pageView, ampState, controller);
+            effectsPageController.init();
+
         } else if (layoutId == R.layout.patch_page) {
             currentPage = Page.PATCH;
         } else {

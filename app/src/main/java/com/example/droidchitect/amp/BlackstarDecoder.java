@@ -166,6 +166,21 @@ public class BlackstarDecoder {
                 state.effects.reverb.level = value;
                 break;
 
+            // ===== NOISE GATE =====
+
+            case Param.NOISE_GATE_SWITCH:
+                state.effects.noiseGate.enabled = (value == 1);
+                break;
+
+            case Param.NOISE_GATE_SENS:
+                state.effects.noiseGate.sensitivity = value;
+                break;
+
+            case Param.NOISE_GATE_AMOUNT:
+                state.effects.noiseGate.amount = value;
+                break;
+
+
             default:
                 // unknown param → ignore
                 break;

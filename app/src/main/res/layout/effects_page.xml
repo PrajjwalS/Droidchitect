@@ -3,10 +3,418 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/bg_main"
-    android:padding="8dp">
-    <TextView android:text="Effects Page"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <!-- ================= EFFECT SELECTOR ================= -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/bg_secondary"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:weightSum="4">
+
+        <!-- MOD -->
+        <TextView
+            android:id="@+id/tab_mod"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="MOD"
+            android:textColor="@color/text_secondary"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@color/bg_tertiary" />
+
+        <!-- DELAY -->
+        <TextView
+            android:id="@+id/tab_delay"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/nav_selected_bg"
+            android:gravity="center"
+            android:text="DELAY"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@color/bg_tertiary" />
+
+        <!-- REVERB -->
+        <TextView
+            android:id="@+id/tab_reverb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="REVERB"
+            android:textColor="@color/text_secondary"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@color/bg_tertiary" />
+
+        <!-- GATE -->
+        <TextView
+            android:id="@+id/tab_gate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="GATE"
+            android:textColor="@color/text_secondary"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <!-- ================= EFFECT HEADER ================= -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/effect_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Delay"
+            android:textColor="@color/text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switch_effect_enabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            app:thumbTint="@color/text_primary"
+            app:trackTint="@color/accent_orange" />
+
+    </LinearLayout>
+
+    <!-- ================= MOD TYPE SELECTOR ================= -->
+
+    <LinearLayout
+        android:id="@+id/layout_mod_types"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- ROW 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/type_phaser"
+                style="@style/VoiceButton"
+                android:text="Phaser" />
+
+            <Button
+                android:id="@+id/type_chorus"
+                style="@style/VoiceButton"
+                android:text="Chorus" />
+
+        </LinearLayout>
+
+        <!-- ROW 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/type_envelope"
+                style="@style/VoiceButton"
+                android:text="Envelope" />
+
+            <Button
+                android:id="@+id/type_tremolo"
+                style="@style/VoiceButton"
+                android:text="Tremolo" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ================= MOD CONTROLS ================= -->
+
+    <LinearLayout
+        android:id="@+id/layout_mod_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- ROW 1 -->
+        <LinearLayout
+            android:id="@+id/layout_mod_row_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_mod_1"
+                style="@style/AmpKnob"
+                app:label_text="MOD1" />
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_mod_2"
+                style="@style/AmpKnob"
+                app:label_text="MOD2" />
+
+        </LinearLayout>
+
+        <!-- ROW 2 -->
+        <LinearLayout
+            android:id="@+id/layout_mod_row_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_mod_3"
+                style="@style/AmpKnob"
+                app:label_text="MOD3" />
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_mod_4"
+                style="@style/AmpKnob"
+                app:label_text="MOD4" />
+
+        </LinearLayout>
+
+        <!-- HARMONIC SWITCH -->
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switch_mod_harmonic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Harmonic"
+            android:textColor="@color/text_primary"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+
+    <!-- ================= DELAY TYPE SELECTOR ================= -->
+    <LinearLayout
+        android:id="@+id/layout_delay_types"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <!-- ROW 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/type_linear"
+                style="@style/VoiceButton"
+                android:text="Linear" />
+
+            <Button
+                android:id="@+id/type_analogue"
+                style="@style/VoiceButton"
+                android:text="Analogue" />
+
+        </LinearLayout>
+
+        <!-- ROW 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/type_tape"
+                style="@style/VoiceButton"
+                android:text="Tape" />
+
+            <Button
+                android:id="@+id/type_multi"
+                style="@style/VoiceButton"
+                android:text="Multi" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- ================= DELAY CONTROLS ================= -->
+    <LinearLayout
+        android:id="@+id/layout_delay_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_delay_level"
+                style="@style/AmpKnob"
+                app:label_text="LEVEL" />
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_delay_feedback"
+                style="@style/AmpKnob"
+                app:label_text="FEEDBACK" />
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_delay_time"
+                style="@style/AmpKnob"
+                app:label_text="TIME" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- ================= REVERB TYPE SELECTOR ================= -->
+    <LinearLayout
+        android:id="@+id/layout_reverb_types"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- ROW 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/type_room"
+                style="@style/VoiceButton"
+                android:text="Room" />
+
+            <Button
+                android:id="@+id/type_hall"
+                style="@style/VoiceButton"
+                android:text="Hall" />
+
+        </LinearLayout>
+
+        <!-- ROW 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/type_spring"
+                style="@style/VoiceButton"
+                android:text="Spring" />
+
+            <Button
+                android:id="@+id/type_plate"
+                style="@style/VoiceButton"
+                android:text="Plate" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- ================= REVERB CONTROLS ================= -->
+    <LinearLayout
+        android:id="@+id/layout_reverb_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_reverb_level"
+                style="@style/AmpKnob"
+                app:label_text="LEVEL" />
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_reverb_size"
+                style="@style/AmpKnob"
+                app:label_text="SIZE" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ================= NOISE-GATE CONTROLS ================= -->
+
+    <LinearLayout
+        android:id="@+id/layout_noise_gate_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_noise_gate_sensitivity"
+                style="@style/AmpKnob"
+                app:label_text="SENS" />
+
+            <com.rejowan.rotaryknob.RotaryKnob
+                android:id="@+id/knob_noise_gate_amount"
+                style="@style/AmpKnob"
+                app:label_text="AMOUNT" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 </LinearLayout>

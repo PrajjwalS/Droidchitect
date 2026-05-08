@@ -21,6 +21,8 @@ public class AmpState {
         public Delay delay = new Delay();
         public Reverb reverb = new Reverb();
         public Modulation modulation = new Modulation();
+
+        public NoiseGate noiseGate = new NoiseGate();
     }
 
     public static class Delay {
@@ -49,14 +51,79 @@ public class AmpState {
         public boolean enabled;
     }
 
+    public static class NoiseGate {
+        public int sensitivity;
+        public int amount;
+        public boolean enabled;
+    }
+
     @Override
     public String toString() {
+
         String voiceName = "Unknown";
 
         if (amplifier.voice >= 0 &&
                 amplifier.voice < BlackstarConstants.VOICES.length) {
 
             voiceName = BlackstarConstants.VOICES[amplifier.voice];
+        }
+
+        String modTypeName = "Unknown";
+
+        switch (effects.modulation.type) {
+
+            case 0:
+                modTypeName = "Phaser";
+                break;
+
+            case 1:
+                modTypeName = "Chorus/Flanger";
+                break;
+
+            case 2:
+                modTypeName = "Envelope";
+                break;
+
+            case 3:
+                modTypeName = "Tremolo";
+                break;
+        }
+
+        boolean harmonic =
+                effects.modulation.adjust2 == 1;
+
+        String modExtra = "";
+
+        switch (effects.modulation.type) {
+
+            case 0:
+                modExtra =
+                        "mix=" + effects.modulation.adjust1 +
+                                ", depth=" + effects.modulation.level +
+                                ", speed=" + effects.modulation.rate;
+                break;
+
+            case 1:
+                modExtra =
+                        "morph=" + effects.modulation.adjust1 +
+                                ", depth=" + effects.modulation.adjust2 +
+                                ", mix=" + effects.modulation.level +
+                                ", speed=" + effects.modulation.rate;
+                break;
+
+            case 2:
+                modExtra =
+                        "sense=" + effects.modulation.adjust1 +
+                                ", depth=" + effects.modulation.level;
+                break;
+
+            case 3:
+                modExtra =
+                        "pitch/xover=" + effects.modulation.adjust1 +
+                                ", harmonic=" + harmonic +
+                                ", depth=" + effects.modulation.level +
+                                ", speed=" + effects.modulation.rate;
+                break;
         }
 
         return "Amplifier[" +
@@ -74,10 +141,8 @@ public class AmpState {
                 "Modulation[" +
                 "enabled=" + effects.modulation.enabled +
                 ", type=" + effects.modulation.type +
-                ", level=" + effects.modulation.level +
-                ", rate=" + effects.modulation.rate +
-                ", adj1=" + effects.modulation.adjust1 +
-                ", adj2=" + effects.modulation.adjust2 +
+                " (" + modTypeName + ")" +
+                ", " + modExtra +
                 "]\n" +
 
                 "Delay[" +
@@ -95,8 +160,13 @@ public class AmpState {
                 ", level=" + effects.reverb.level +
                 ", adj1=" + effects.reverb.adjust1 +
                 ", adj2=" + effects.reverb.adjust2 +
-                "]";
+                "]\n" +
 
+                "NoiseGate[" +
+                "enabled=" + effects.noiseGate.enabled +
+                ", sensitivity=" + effects.noiseGate.sensitivity +
+                ", amount=" + effects.noiseGate.amount +
+                "]";
     }
 
     // ================= AMPLIFIER SETTERS =================
@@ -172,4 +242,154 @@ public class AmpState {
     public int getResonance() {
         return amplifier.resonance;
     }
+
+
+    public void setDelayEnabled(boolean enabled) {
+        effects.delay.enabled = enabled;
+    }
+
+    public boolean isDelayEnabled() {
+        return effects.delay.enabled;
+    }
+
+    public void setDelayType(int type) {
+        effects.delay.type = type;
+    }
+
+    public int getDelayType() {
+        return effects.delay.type;
+    }
+
+    public void setDelayLevel(int value) {
+        effects.delay.level = value;
+    }
+
+    public int getDelayLevel() {
+        return effects.delay.level;
+    }
+
+    public void setDelayFeedback(int value) {
+        effects.delay.adjust1 = value;
+    }
+
+    public int getDelayFeedback() {
+        return effects.delay.adjust1;
+    }
+
+    public void setDelayTime(int value) {
+        effects.delay.tempo = value;
+    }
+
+    public int getDelayTime() {
+        return effects.delay.tempo;
+    }
+
+    public void setReverbEnabled(boolean enabled) {
+        effects.reverb.enabled = enabled;
+    }
+
+    public boolean isReverbEnabled() {
+        return effects.reverb.enabled;
+    }
+
+    public void setReverbType(int type) {
+        effects.reverb.type = type;
+    }
+
+    public int getReverbType() {
+        return effects.reverb.type;
+    }
+
+    public void setReverbLevel(int value) {
+        effects.reverb.level = value;
+    }
+
+    public int getReverbLevel() {
+        return effects.reverb.level;
+    }
+
+    public void setReverbSize(int value) {
+        effects.reverb.adjust1 = value;
+    }
+
+    public int getReverbSize() {
+        return effects.reverb.adjust1;
+    }
+
+    // ================= NOISE GATE =================
+
+    public void setNoiseGateEnabled(boolean enabled) {
+        effects.noiseGate.enabled = enabled;
+    }
+
+    public boolean isNoiseGateEnabled() {
+        return effects.noiseGate.enabled;
+    }
+
+    public void setNoiseGateSensitivity(int value) {
+        effects.noiseGate.sensitivity = value;
+    }
+
+    public int getNoiseGateSensitivity() {
+        return effects.noiseGate.sensitivity;
+    }
+
+    public void setNoiseGateAmount(int value) {
+        effects.noiseGate.amount = value;
+    }
+
+    public int getNoiseGateAmount() {
+        return effects.noiseGate.amount;
+    }
+
+    // ================= MODULATION =================
+
+    public void setModulationEnabled(boolean enabled) {
+        effects.modulation.enabled = enabled;
+    }
+
+    public boolean isModulationEnabled() {
+        return effects.modulation.enabled;
+    }
+
+    public void setModulationType(int type) {
+        effects.modulation.type = type;
+    }
+
+    public int getModulationType() {
+        return effects.modulation.type;
+    }
+
+    public void setModulationParam1(int value) {
+        effects.modulation.adjust1 = value;
+    }
+
+    public int getModulationParam1() {
+        return effects.modulation.adjust1;
+    }
+
+    public void setModulationParam2(int value) {
+        effects.modulation.adjust2 = value;
+    }
+
+    public int getModulationParam2() {
+        return effects.modulation.adjust2;
+    }
+
+    public void setModulationParam3(int value) {
+        effects.modulation.level = value;
+    }
+
+    public int getModulationParam3() {
+        return effects.modulation.level;
+    }
+
+    public void setModulationParam4(int value) {
+        effects.modulation.rate = value;
+    }
+
+    public int getModulationParam4() {
+        return effects.modulation.rate;
+    }
+
 }
