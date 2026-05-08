@@ -203,18 +203,21 @@ public class MainActivity extends AppCompatActivity
         usbConnectionManager.setConnectionListener(this);
         controller = new AmpController(usbConnectionManager);
 
-        // Actual UI Start
+        // Actual UI Start (shell is the TOP layer showing status, and bottom page navigator )
+        // Shell never goes out of scope when the app runs.
         shellController = new ShellController(
                 findViewById(android.R.id.content),
                 this
         );
+
+        // Initially select the amp page and load it.
         shellController.selectAmp();
         loadPage(R.layout.amp_page);
 
         // register usb receiver ... this ultimately starts the USB manager functionality.
         registerUsbReceiver();
 
-        // Try Finding the device
+        // Try Finding the device in case it was already connected when the amp came up.
         usbConnectionManager.detectAndConnect();
     }
 

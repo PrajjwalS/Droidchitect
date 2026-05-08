@@ -6,4 +6,69 @@
     </style>
 
     <style name="Theme.Droidchitect" parent="Base.Theme.Droidchitect" />
+
+    <style name="VoiceButton">
+
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/voice_button_height</item>
+
+        <item name="android:layout_weight">1</item>
+
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">12sp</item>
+
+        <item name="android:layout_margin">@dimen/voice_button_margin</item>
+
+        <item name="android:backgroundTint">@color/bg_secondary</item>
+
+        <item name="android:gravity">center</item>
+        <item name="android:lines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textAlignment">center</item>
+
+        <item name="android:includeFontPadding">false</item>
+
+    </style>
+
+    <style name="AmpKnob">
+
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">@dimen/knob_margin</item>
+
+        <item name="android:padding">@dimen/knob_padding</item>
+
+        <item name="label_margin">@dimen/knob_label_margin</item>
+
+        <item name="max">100</item>
+        <item name="min">0</item>
+
+        <item name="show_label">true</item>
+        <item name="show_progress_text">true</item>
+
+        <item name="circle_style">gradient</item>
+
+        <item name="circle_gradient_outer_color">@color/bg_primary</item>
+        <item name="circle_gradient_center_color">@color/bg_tertiary</item>
+
+        <item name="border_color">@color/bg_tertiary</item>
+
+        <item name="progress_style">circle</item>
+
+        <item name="progress_color">@color/bg_tertiary</item>
+        <item name="progress_filled_color">@color/accent_orange</item>
+
+        <item name="show_big_progress">false</item>
+
+        <item name="progress_text_size">16dp</item>
+
+        <item name="current_progress">0</item>
+
+        <item name="indicator_style">line</item>
+        <item name="indicator_color">@color/accent_orange</item>
+
+    </style>
+
 </resources>

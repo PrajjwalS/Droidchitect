@@ -129,12 +129,12 @@ public class AmpPageController {
 
             for (Button b : all) {
                 b.setBackgroundTintList(
-                        root.getContext().getColorStateList(R.color.voice_button_gray)
+                        root.getContext().getColorStateList(R.color.bg_secondary)
                 );
             }
 
             btn.setBackgroundTintList(
-                    root.getContext().getColorStateList(R.color.orange)
+                    root.getContext().getColorStateList(R.color.accent_orange)
             );
 
             if (state.getVoice() != voiceIndex) {
@@ -160,13 +160,13 @@ public class AmpPageController {
 
         for (Button b : all) {
             b.setBackgroundTintList(
-                    root.getContext().getColorStateList(R.color.voice_button_gray)
+                    root.getContext().getColorStateList(R.color.bg_secondary)
             );
         }
 
         if (voice >= 0 && voice < all.length) {
             all[voice].setBackgroundTintList(
-                    root.getContext().getColorStateList(R.color.orange)
+                    root.getContext().getColorStateList(R.color.accent_orange)
             );
         }
     }

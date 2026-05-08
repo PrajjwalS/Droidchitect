@@ -107,12 +107,12 @@ public class ShellController {
     }
 
     private void setSelected(TextView t) {
-        t.setTextColor(root.getContext().getColor(R.color.white));
+        t.setTextColor(root.getContext().getColor(R.color.text_primary));
         t.setBackgroundResource(R.drawable.nav_selected_bg);
     }
 
     private void setUnselected(TextView t) {
-        t.setTextColor(root.getContext().getColor(R.color.gray));
+        t.setTextColor(root.getContext().getColor(R.color.text_secondary));
         t.setBackgroundColor(
                 root.getContext().getColor(android.R.color.transparent)
         );

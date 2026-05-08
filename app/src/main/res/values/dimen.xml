@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="knob_label_margin">18dp</dimen>
+    <dimen name="screen_padding">8dp</dimen>
+    <dimen name="voice_button_height">48dp</dimen>
+    <dimen name="voice_button_margin">4dp</dimen>
+    <dimen name="knob_padding">8dp</dimen>
+    <dimen name="knob_margin">2dp</dimen>
+    <dimen name="bottom_nav_height">64dp</dimen>
 </resources>
