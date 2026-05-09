@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- PATCH NAME -->
+
+        <EditText
+            android:id="@+id/editPatchName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Patch Name"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
+            android:backgroundTint="@color/accent_orange"
+            android:inputType="textCapSentences" />
+
+        <!-- CREATOR -->
+
+        <EditText
+            android:id="@+id/editPatchCreator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Creator"
+            android:text="Droidchitect"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
+            android:backgroundTint="@color/accent_orange"
+            android:inputType="textCapSentences" />
+
+        <!-- TAGS -->
+
+        <EditText
+            android:id="@+id/editPatchTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Tags (comma separated)"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
+            android:backgroundTint="@color/accent_orange"
+            android:inputType="text" />
+
+        <!-- ABOUT -->
+
+        <EditText
+            android:id="@+id/editPatchAbout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/accent_orange"
+            android:gravity="top"
+            android:hint="About this patch..."
+            android:inputType="textMultiLine"
+            android:lines="2"
+            android:maxLines="10"
+            android:paddingTop="12dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
+
+            />
+
+
+    </LinearLayout>
+</ScrollView>

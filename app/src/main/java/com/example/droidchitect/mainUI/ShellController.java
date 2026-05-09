@@ -14,8 +14,6 @@ public class ShellController {
         void onAmpSelected();
         void onEffectsSelected();
         void onPatchSelected();
-
-        void onConnectClicked();
     }
 
     private final View root;

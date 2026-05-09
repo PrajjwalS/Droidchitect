@@ -33,7 +33,7 @@ public class EffectsPageController {
         NOISE_GATE
     }
 
-    private EffectPage currentEffect = EffectPage.DELAY;
+    private EffectPage currentEffect = EffectPage.MODULATION;
 
     // =========================================================
     // TOP EFFECT TABS
@@ -218,7 +218,7 @@ public class EffectsPageController {
 
         initKnobs();
 
-        showDelay();
+        showModulation();
     }
 
     // =========================================================

@@ -1,12 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_main"
-    android:padding="8dp">
-    <TextView android:text="Patch Page"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+    android:padding="@dimen/screen_padding">
+
+    <!-- ================================================== -->
+    <!-- TOP PANEL -->
+    <!-- ================================================== -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/top_panel_bg"
+        android:elevation="6dp"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- SEARCH -->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+
+
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@color/bg_primary"
+            app:boxStrokeColor="@color/accent_orange"
+            app:hintTextColor="@color/text_secondary"
+            app:cursorColor="@color/accent_orange"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/patchSearchInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:hint="Search patches"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+
+                android:singleLine="true"
+                android:maxLines="1"
+                android:imeOptions="actionSearch"
+                android:inputType="text"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- TITLE -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="SAVED PATCHES"
+            android:textColor="@color/accent_orange"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <!-- PATCH LIST -->
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:id="@+id/patchListContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <!-- ================================================== -->
+    <!-- BOTTOM PANEL -->
+    <!-- ================================================== -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_panel_bg"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- CURRENT PATCH CARD -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/patch_card_bg"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- TITLE -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CURRENT PATCH"
+                android:textColor="@color/accent_orange"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <!-- PATCH NAME -->
+
+            <TextView
+                android:id="@+id/currentPatchName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Unsaved Patch"
+                android:textColor="@color/text_primary"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <!-- SUMMARY -->
+
+            <TextView
+                android:id="@+id/currentPatchSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Clean Warm • Reverb • Delay"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <!-- ABOUT -->
+
+            <TextView
+                android:id="@+id/currentPatchAbout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:lineSpacingExtra="1dp"
+                android:maxLines="2"
+                android:text="No description"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+        <!-- ACTION BUTTONS -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical">
+
+            <!-- ROW -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/exportPatchButton"
+                    style="@style/VoiceButton"
+                    android:text="Export All"
+                    android:textAllCaps="false" />
+
+            </LinearLayout>
+
+            <!-- SAVE BUTTON -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saveCurrentPatchButton"
+                style="@style/VoiceButton"
+                android:layout_width="match_parent"
+                android:layout_marginTop="4dp"
+                android:layout_weight="0"
+                android:backgroundTint="@color/accent_orange"
+                android:text="Save Current Patch"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary" />
+
+        </LinearLayout>
+
+
+
 </LinearLayout>

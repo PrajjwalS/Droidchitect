@@ -12,11 +12,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+// import com.example.droidchitect.AmpTester;
 import com.example.droidchitect.R;
 import com.example.droidchitect.amp.AmpController;
 import com.example.droidchitect.amp.AmpState;
+
 import com.example.droidchitect.usb.UsbConnectionManager;
-import com.rejowan.rotaryknob.RotaryKnob;
 
 public class MainActivity extends AppCompatActivity
         implements UsbConnectionManager.ConnectionListener,
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity
 
 
     /*AMP state */
-    private AmpState ampState = new AmpState();
+    private final AmpState ampState = new AmpState();
 
 
     /* Stuff that handles UI */
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     private AmpPageController ampPageController;
     private ShellController shellController;
     private EffectsPageController effectsPageController;
+    private PatchPageController patchPageController;
 
     enum Page {
         AMP,
@@ -71,6 +73,10 @@ public class MainActivity extends AppCompatActivity
         if (shellController != null) {
             shellController.setConnected(true);
         }
+        // test only
+
+        ///////////////
+
     }
 
     @Override
@@ -169,11 +175,20 @@ public class MainActivity extends AppCompatActivity
 
         } else if (layoutId == R.layout.patch_page) {
             currentPage = Page.PATCH;
+            patchPageController =
+                    new PatchPageController(
+                            this,
+                            pageView,
+                            ampState,
+                            controller
+                    );
+
+            patchPageController.init();
         } else {
             // well ... hmmm
         }
 
-    };
+    }
 
     @Override
     public void onAmpSelected() {
@@ -189,15 +204,7 @@ public class MainActivity extends AppCompatActivity
     public void onPatchSelected() {
         loadPage(R.layout.patch_page);
     }
-
-    @Override
-    public void onConnectClicked() {
-        //usbConnectionManager.detectAndConnect();
-    }
     /* -------------------------------------------------------------- */
-
-
-
 
     /* ------------ MAIN PART (Create and Destroy handlers) -------------- */
     @Override
@@ -238,4 +245,7 @@ public class MainActivity extends AppCompatActivity
         usbConnectionManager.disconnect();
     }
     /* -------------------------------------------------------------- */
+
+
+
 }
