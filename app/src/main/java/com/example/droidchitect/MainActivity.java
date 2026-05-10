@@ -18,6 +18,7 @@ import com.example.droidchitect.R;
 import com.example.droidchitect.amp.AmpController;
 import com.example.droidchitect.amp.AmpState;
 
+import com.example.droidchitect.live.LiveConfigManager;
 import com.example.droidchitect.patch.PatchManager;
 import com.example.droidchitect.usb.UsbConnectionManager;
 
@@ -48,16 +49,22 @@ public class MainActivity extends AppCompatActivity
     private ShellController shellController;
     private EffectsPageController effectsPageController;
     private PatchPageController patchPageController;
+    private LivePageController livePageController;
 
     enum Page {
         AMP,
         EFFECTS,
-        PATCH
+        PATCH,
+        LIVE
     }
     private Page currentPage;
 
     /* Patch stuff */
-    private PatchManager patchManager;  // The whole app should use this ref of patchManager
+    private PatchManager patchManager;  // The whole app should use this ref of PatchManager
+
+    /* Live Mode stuff*/
+    private LiveConfigManager liveConfigManager; // The whole app should use this ref of LiveConfigMnager
+
     /* ====================== CLASS VARS END ========================== */
 
 
@@ -161,14 +168,14 @@ public class MainActivity extends AppCompatActivity
 
         } else if (layoutId == R.layout.patch_page) {
             currentPage = Page.PATCH;
-            patchPageController = new PatchPageController(pageView, ampState, controller, patchManager);
-
+            patchPageController = new PatchPageController(pageView, ampState, controller, patchManager, liveConfigManager);
             patchPageController.init();
 
-        } else {
-            // well ... hmmm
+        } else if (layoutId == R.layout.live_page) {
+            currentPage = Page.LIVE;
+            livePageController = new LivePageController(pageView, patchManager, liveConfigManager, controller, ampState);
+            livePageController.init();
         }
-
     }
 
     @Override
@@ -185,6 +192,29 @@ public class MainActivity extends AppCompatActivity
     public void onPatchSelected() {
         loadPage(R.layout.patch_page);
     }
+
+    @Override
+    public void onLiveSelected() {
+        loadPage(R.layout.live_page);
+    }
+
+    // Sets and unsets the Nav Bar , used for Go Live! mode.
+    public void setBottomNavVisible(
+            boolean visible
+    ) {
+
+        View nav =
+                findViewById(
+                        R.id.bottom_nav_bar
+                );
+
+        nav.setVisibility(
+                visible
+                        ? View.VISIBLE
+                        : View.GONE
+        );
+    }
+
     /* -------------------------------------------------------------- */
 
     /* ------------ MAIN PART (Create and Destroy handlers) -------------- */
@@ -216,6 +246,9 @@ public class MainActivity extends AppCompatActivity
         // reload cache of patches, maybe do this on a separate thread?
         patchManager = new PatchManager(this);
         patchManager.reloadCache();
+
+        // Live Mode stuff init
+        liveConfigManager = new LiveConfigManager(this);
 
         // Try Finding the device in case it was already connected when the amp came up.
         usbConnectionManager.detectAndConnect();

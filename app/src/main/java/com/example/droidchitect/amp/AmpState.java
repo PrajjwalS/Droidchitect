@@ -30,7 +30,7 @@ public class AmpState {
         public int adjust1;
         public int adjust2;
         public int level;
-        public int tempo;
+        public int tempo = 100;
         public boolean enabled;
     }
 
