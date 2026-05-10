@@ -10,18 +10,23 @@ public class PatchLoader {
     private static final String TAG = "PATCH_LOADER";
 
     // =========================================================
-    // Thread to do the job, we only allow 1 patch application at a time.
+    // Thread to do the job, we want any latest request to be fulfilled first
+    //    so current thread may get interrupted in case new applyPatch call comes
     // =========================================================
-    private static Thread currentPatchThread = null;
+    private static volatile Thread currentPatchThread = null;
+
+    // interface Callbacks to tell the patch load status
+    public interface PatchLoadCallback {
+        void onSuccess(Patch patch);
+        void onFailure(Patch patch);
+    }
+
 
 
     // =========================================================
     // TUNING
-    // =========================================================
+    // ========================================================
 
-    /*
-     * Initial fast send pacing
-     */
     private static int COMMAND_DELAY_MS = 5;
 
     /*
@@ -33,31 +38,6 @@ public class PatchLoader {
      * Maximum reconciliation attempts
      */
     private static int MAX_SYNC_LOOPS = 20;
-
-
-    // =========================================================
-    // Thread helpers
-    // =========================================================
-
-    public static boolean isBusy() {
-
-        return currentPatchThread != null
-                && currentPatchThread.isAlive();
-    }
-
-    public static void waitUntilIdle() {
-
-        try {
-
-            if (currentPatchThread != null) {
-
-                currentPatchThread.join();
-            }
-
-        } catch (Exception ignored) {
-        }
-    }
-
 
     // =========================================================
     // CONFIG
@@ -93,271 +73,53 @@ public class PatchLoader {
     // =========================================================
 
     private static void delay() {
-
         try {
             Thread.sleep(COMMAND_DELAY_MS);
         } catch (Exception ignored) {
         }
     }
 
+// INTERRUPT CHECK
+    private static boolean shouldStop() {
+        return Thread.currentThread()
+                .isInterrupted();
+    }
 
-    // =========================================================
-    // APPLY PATCH
-    // =========================================================
 
-    public static void applyPatch(
-            Patch patch,
-            AmpController controller,
-            AmpState ampState
-    ) {
+    // ONLY FOR AMP TESTER
+    public static Thread getCurrentPatchThread() {
+        return currentPatchThread;
+    }
 
-        if (isBusy()) {
-            Log.w(
-                    TAG,
-                    "PatchLoader busy, ignoring apply request"
-            );
-            return;
+// =========================================================
+// SEND + DELAY
+// =========================================================
+
+    private static boolean sendCommand(Runnable command, int comm_delay) {
+
+        if (shouldStop()) {
+            return false;
         }
 
-        currentPatchThread = new Thread(() -> {
+        command.run();
 
-            long startTime =
-                    System.currentTimeMillis();
-
-            Log.d(
-                    TAG,
-                    "Starting synchronized patch apply"
+        // add Delay
+        try {
+            Thread.sleep(
+                    comm_delay
             );
+        } catch (InterruptedException e) {
+            return false;
+        }
 
-            // =================================================
-            // FIRST PASS
-            // =================================================
-
-            sendAll(patch, controller);
-
-            // =================================================
-            // VERIFY + RESEND LOOP
-            // =================================================
-
-            for (int loop = 1;
-                 loop <= MAX_SYNC_LOOPS;
-                 loop++) {
-
-                try {
-
-                    Thread.sleep(VERIFY_INTERVAL_MS);
-
-                } catch (Exception ignored) {
-                }
-
-                int mismatches =
-                        sendMismatches(
-                                patch,
-                                controller,
-                                ampState
-                        );
-
-                Log.d(
-                        TAG,
-                        "Loop " +
-                                loop +
-                                " mismatches = " +
-                                mismatches
-                );
-
-                // SUCCESS
-                if (mismatches == 0) {
-
-                    long totalTime =
-                            System.currentTimeMillis()
-                                    - startTime;
-
-                    Log.d(
-                            TAG,
-                            "Patch synchronized in " +
-                                    loop +
-                                    " loops, " +
-                                    totalTime +
-                                    " ms"
-                    );
-                    currentPatchThread = null;
-                    return;
-                }
-            }
-
-            Log.e(
-                    TAG,
-                    "Patch synchronization failed"
-            );
-
-            currentPatchThread = null;
-        });
-
-        currentPatchThread.start();
-
+        return !shouldStop();
     }
-
-
-    // =========================================================
-    // SEND ALL
-    // =========================================================
-
-    private static void sendAll(
-            Patch patch,
-            AmpController controller
-    ) {
-
-        // =====================================================
-        // AMPLIFIER
-        // =====================================================
-
-        controller.setVoice(patch.voice);
-        delay();
-
-        controller.setGain(patch.gain);
-        delay();
-
-        controller.setVolume(patch.volume);
-        delay();
-
-        controller.setBass(patch.bass);
-        delay();
-
-        controller.setMiddle(patch.middle);
-        delay();
-
-        controller.setTreble(patch.treble);
-        delay();
-
-        controller.setIsf(patch.isf);
-        delay();
-
-        controller.setPresence(patch.presence);
-        delay();
-
-        controller.setResonance(patch.resonance);
-        delay();
-
-
-        // =====================================================
-        // MODULATION
-        // =====================================================
-
-        controller.toggleMod(
-                patch.modulationEnabled
-        );
-        delay();
-
-        controller.setModulationType(
-                patch.modulationType
-        );
-        delay();
-
-        controller.setModulationParam1(
-                patch.modulationParam1
-        );
-        delay();
-
-        controller.setModulationParam2(
-                patch.modulationParam2
-        );
-        delay();
-
-        controller.setModulationParam3(
-                patch.modulationParam3
-        );
-        delay();
-
-        controller.setModulationParam4(
-                patch.modulationParam4
-        );
-        delay();
-
-
-        // =====================================================
-        // DELAY
-        // =====================================================
-
-        controller.toggleDelay(
-                patch.delayEnabled
-        );
-        delay();
-
-        controller.setDelayType(
-                patch.delayType
-        );
-        delay();
-
-        controller.setDelayLevel(
-                patch.delayLevel
-        );
-        delay();
-
-        controller.setDelayFeedback(
-                patch.delayFeedback
-        );
-        delay();
-
-        controller.setDelayTime(
-                patch.delayTime
-        );
-        delay();
-
-
-        // =====================================================
-        // REVERB
-        // =====================================================
-
-        controller.toggleReverb(
-                patch.reverbEnabled
-        );
-        delay();
-
-        controller.setReverbType(
-                patch.reverbType
-        );
-        delay();
-
-        controller.setReverbLevel(
-                patch.reverbLevel
-        );
-        delay();
-
-        controller.setReverbSize(
-                patch.reverbSize
-        );
-        delay();
-
-
-        // =====================================================
-        // NOISE GATE
-        // =====================================================
-
-        controller.toggleNoiseGate(
-                patch.noiseGateEnabled
-        );
-        delay();
-
-        controller.setNoiseGateSensitivity(
-                patch.noiseGateSensitivity
-        );
-        delay();
-
-        controller.setNoiseGateAmount(
-                patch.noiseGateAmount
-        );
-        delay();
-    }
-
-
-    // =========================================================
-    // SEND MISMATCHES
-    // =========================================================
 
     private static int sendMismatches(
             Patch patch,
             AmpController controller,
-            AmpState state
+            AmpState state,
+            int comm_delay
     ) {
 
         int mismatches = 0;
@@ -367,211 +129,218 @@ public class PatchLoader {
         // =====================================================
 
         if (patch.voice != state.getVoice()) {
-            controller.setVoice(patch.voice);
+            if (!sendCommand(() -> controller.setVoice(patch.voice), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
         if (patch.gain != state.getGain()) {
-            controller.setGain(patch.gain);
+            if (!sendCommand(() -> controller.setGain(patch.gain), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
         if (patch.volume != state.getVolume()) {
-            controller.setVolume(patch.volume);
+            if (!sendCommand(() -> controller.setVolume(patch.volume), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
         if (patch.bass != state.getBass()) {
-            controller.setBass(patch.bass);
+            if (!sendCommand(() -> controller.setBass(patch.bass), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
         if (patch.middle != state.getMiddle()) {
-            controller.setMiddle(patch.middle);
+            if (!sendCommand(() -> controller.setMiddle(patch.middle), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
         if (patch.treble != state.getTreble()) {
-            controller.setTreble(patch.treble);
+            if (!sendCommand(() -> controller.setTreble(patch.treble), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
         if (patch.isf != state.getIsf()) {
-            controller.setIsf(patch.isf);
+            if (!sendCommand(() -> controller.setIsf(patch.isf), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
         if (patch.presence != state.getPresence()) {
-            controller.setPresence(patch.presence);
+            if (!sendCommand(() -> controller.setPresence(patch.presence), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
         if (patch.resonance != state.getResonance()) {
-            controller.setResonance(patch.resonance);
+            if (!sendCommand(() -> controller.setResonance(patch.resonance), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
-
 
         // =====================================================
         // MODULATION
         // =====================================================
 
-        if (patch.modulationEnabled
-                != state.isModulationEnabled()) {
-            controller.toggleMod(
-                    patch.modulationEnabled
-            );
+        if (patch.modulationEnabled != state.isModulationEnabled()) {
+            if (!sendCommand(() -> controller.toggleMod(patch.modulationEnabled), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
-        if (patch.modulationType
-                != state.getModulationType()) {
-            controller.setModulationType(
-                    patch.modulationType
-            );
+        if (patch.modulationType != state.getModulationType()) {
+            if (!sendCommand(() -> controller.setModulationType(patch.modulationType), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
-        if (patch.modulationParam1
-                != state.getModulationParam1()) {
-            controller.setModulationParam1(
-                    patch.modulationParam1
-            );
+        if (patch.modulationParam1 != state.getModulationParam1()) {
+            if (!sendCommand(() -> controller.setModulationParam1(patch.modulationParam1), comm_delay)) {
+                return mismatches;
+            }
+
             mismatches++;
         }
 
-        if (patch.modulationParam2
-                != state.getModulationParam2()) {
-            controller.setModulationParam2(
-                    patch.modulationParam2
-            );
+        if (patch.modulationParam2 != state.getModulationParam2()) {
+
+            if (!sendCommand(() -> controller.setModulationParam2(patch.modulationParam2), comm_delay)) {
+                return mismatches;
+            }
+
             mismatches++;
         }
 
-        if (patch.modulationParam3
-                != state.getModulationParam3()) {
-            controller.setModulationParam3(
-                    patch.modulationParam3
-            );
+        if (patch.modulationParam3 != state.getModulationParam3()) {
+
+            if (!sendCommand(() -> controller.setModulationParam3(patch.modulationParam3), comm_delay)) {
+                return mismatches;
+            }
+
             mismatches++;
         }
 
-        if (patch.modulationParam4
-                != state.getModulationParam4()) {
-            controller.setModulationParam4(
-                    patch.modulationParam4
-            );
+        if (patch.modulationParam4 != state.getModulationParam4()) {
+            if (!sendCommand(() -> controller.setModulationParam4(patch.modulationParam4), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
-
 
         // =====================================================
         // DELAY
         // =====================================================
 
-        if (patch.delayEnabled
-                != state.isDelayEnabled()) {
-            controller.toggleDelay(
-                    patch.delayEnabled
-            );
+        if (patch.delayEnabled != state.isDelayEnabled()) {
+            if (!sendCommand(() -> controller.toggleDelay(patch.delayEnabled), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
-        if (patch.delayType
-                != state.getDelayType()) {
-            controller.setDelayType(
-                    patch.delayType
-            );
+        if (patch.delayType != state.getDelayType()) {
+            if (!sendCommand(() -> controller.setDelayType(patch.delayType), comm_delay)) {
+                return mismatches;
+            }
+
             mismatches++;
         }
 
-        if (patch.delayLevel
-                != state.getDelayLevel()) {
-            controller.setDelayLevel(
-                    patch.delayLevel
-            );
+        if (patch.delayLevel != state.getDelayLevel()) {
+            if (!sendCommand(() -> controller.setDelayLevel(patch.delayLevel), comm_delay)) {
+                return mismatches;
+            }
+
             mismatches++;
         }
 
-        if (patch.delayFeedback
-                != state.getDelayFeedback()) {
-            controller.setDelayFeedback(
-                    patch.delayFeedback
-            );
+        if (patch.delayFeedback != state.getDelayFeedback()) {
+            if (!sendCommand(() -> controller.setDelayFeedback(patch.delayFeedback), comm_delay)) {
+                return mismatches;
+            }
+
             mismatches++;
         }
 
-        if (patch.delayTime
-                != state.getDelayTime()) {
-            controller.setDelayTime(
-                    patch.delayTime
-            );
+        if (patch.delayTime != state.getDelayTime()) {
+            if (!sendCommand(() -> controller.setDelayTime(patch.delayTime), comm_delay)) {
+                return mismatches;
+            }
+
             mismatches++;
         }
-
 
         // =====================================================
         // REVERB
         // =====================================================
 
-        if (patch.reverbEnabled
-                != state.isReverbEnabled()) {
-            controller.toggleReverb(
-                    patch.reverbEnabled
-            );
+        if (patch.reverbEnabled != state.isReverbEnabled()) {
+            if (!sendCommand(() -> controller.toggleReverb(patch.reverbEnabled), comm_delay)) {
+                return mismatches;
+            }
+
             mismatches++;
         }
 
-        if (patch.reverbType
-                != state.getReverbType()) {
-            controller.setReverbType(
-                    patch.reverbType
-            );
+        if (patch.reverbType != state.getReverbType()) {
+            if (!sendCommand(() -> controller.setReverbType(patch.reverbType), comm_delay)) {
+                return mismatches;
+            }
+
             mismatches++;
         }
 
-        if (patch.reverbLevel
-                != state.getReverbLevel()) {
-            controller.setReverbLevel(
-                    patch.reverbLevel
-            );
+        if (patch.reverbLevel != state.getReverbLevel()) {
+            if (!sendCommand(() -> controller.setReverbLevel(patch.reverbLevel), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
-        if (patch.reverbSize
-                != state.getReverbSize()) {
-            controller.setReverbSize(
-                    patch.reverbSize
-            );
+        if (patch.reverbSize != state.getReverbSize()) {
+            if (!sendCommand(() -> controller.setReverbSize(patch.reverbSize), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
-
 
         // =====================================================
         // NOISE GATE
         // =====================================================
 
-        if (patch.noiseGateEnabled
-                != state.isNoiseGateEnabled()) {
-            controller.toggleNoiseGate(
-                    patch.noiseGateEnabled
-            );
+        if (patch.noiseGateEnabled != state.isNoiseGateEnabled()) {
+            if (!sendCommand(() -> controller.toggleNoiseGate(patch.noiseGateEnabled), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
-        if (patch.noiseGateSensitivity
-                != state.getNoiseGateSensitivity()) {
-            controller.setNoiseGateSensitivity(
-                    patch.noiseGateSensitivity
-            );
+        if (patch.noiseGateSensitivity != state.getNoiseGateSensitivity()) {
+            if (!sendCommand(() -> controller.setNoiseGateSensitivity(patch.noiseGateSensitivity), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
-        if (patch.noiseGateAmount
-                != state.getNoiseGateAmount()) {
-            controller.setNoiseGateAmount(
-                    patch.noiseGateAmount
-            );
+        if (patch.noiseGateAmount != state.getNoiseGateAmount()) {
+            if (!sendCommand(() -> controller.setNoiseGateAmount(patch.noiseGateAmount), comm_delay)) {
+                return mismatches;
+            }
             mismatches++;
         }
 
@@ -579,5 +348,85 @@ public class PatchLoader {
     }
 
 
+
+// =========================================================
+// APPLY PATCH
+// =========================================================
+    public static synchronized void applyPatch(
+            Patch patch,
+            AmpController controller,
+            AmpState ampState,
+            PatchLoadCallback callback)
+    {
+
+        // CANCEL PREVIOUS THREAD if already running
+        if (currentPatchThread != null && currentPatchThread.isAlive()) {
+            currentPatchThread.interrupt();
+        }
+
+        // CREATE THREAD
+        Thread thread = new Thread(() -> {
+
+            long startTime =
+                    System.currentTimeMillis();
+
+            try {
+
+                for (int loop = 1; loop <= MAX_SYNC_LOOPS; loop++) {
+
+                    if (shouldStop()) {
+                        return;
+                    }
+                    int comm_delay = 0; // No delay except for 1st time
+                    if (loop == 1)
+                        comm_delay = COMMAND_DELAY_MS;
+
+                    int mismatches = sendMismatches(patch, controller, ampState, comm_delay);
+
+                    Log.d(TAG, "Loop " + loop + " mismatches = " + mismatches);
+
+                    if (mismatches == 0) {
+                        long totalTime = System.currentTimeMillis() - startTime;
+                        Log.d(TAG, "Patch synchronized in " + totalTime + " ms");
+
+                        // Notify the caller that patch load was successful.
+                        if (callback != null) {
+                            callback.onSuccess(patch);
+                        }
+                        return;
+                    }
+
+                    // NOTE: if this thread gets interrupted then don't really need to notify the caller
+                    //       Next thread will do that possibly.
+
+                    try {
+                        Thread.sleep(
+                                VERIFY_INTERVAL_MS
+                        );
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+
+                // Let caller know Patch Load failed
+                Log.e(TAG, "Patch synchronization failed");
+                if (callback != null) {
+                    callback.onFailure(patch);
+                }
+
+            } finally {
+
+                if (Thread.currentThread() ==
+                        currentPatchThread) {
+
+                    currentPatchThread = null;
+                }
+            }
+        });
+
+        currentPatchThread = thread;
+
+        thread.start();
+    }
 
 }

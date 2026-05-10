@@ -135,12 +135,12 @@
 
             <Button
                 android:id="@+id/type_phaser"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Phaser" />
 
             <Button
                 android:id="@+id/type_chorus"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Chorus" />
 
         </LinearLayout>
@@ -153,12 +153,12 @@
 
             <Button
                 android:id="@+id/type_envelope"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Envelope" />
 
             <Button
                 android:id="@+id/type_tremolo"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Tremolo" />
 
         </LinearLayout>
@@ -244,12 +244,12 @@
 
             <Button
                 android:id="@+id/type_linear"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Linear" />
 
             <Button
                 android:id="@+id/type_analogue"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Analogue" />
 
         </LinearLayout>
@@ -262,12 +262,12 @@
 
             <Button
                 android:id="@+id/type_tape"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Tape" />
 
             <Button
                 android:id="@+id/type_multi"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Multi" />
 
         </LinearLayout>
@@ -326,12 +326,12 @@
 
             <Button
                 android:id="@+id/type_room"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Room" />
 
             <Button
                 android:id="@+id/type_hall"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Hall" />
 
         </LinearLayout>
@@ -344,12 +344,12 @@
 
             <Button
                 android:id="@+id/type_spring"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Spring" />
 
             <Button
                 android:id="@+id/type_plate"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Plate" />
 
         </LinearLayout>

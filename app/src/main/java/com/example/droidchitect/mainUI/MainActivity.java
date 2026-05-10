@@ -13,10 +13,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 // import com.example.droidchitect.AmpTester;
+import com.example.droidchitect.AmpTester;
 import com.example.droidchitect.R;
 import com.example.droidchitect.amp.AmpController;
 import com.example.droidchitect.amp.AmpState;
 
+import com.example.droidchitect.patch.PatchManager;
 import com.example.droidchitect.usb.UsbConnectionManager;
 
 public class MainActivity extends AppCompatActivity
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity
     }
     private Page currentPage;
 
+    /* Patch stuff */
+    private PatchManager patchManager;  // The whole app should use this ref of patchManager
     /* ====================== CLASS VARS END ========================== */
 
 
@@ -73,10 +77,6 @@ public class MainActivity extends AppCompatActivity
         if (shellController != null) {
             shellController.setConnected(true);
         }
-        // test only
-
-        ///////////////
-
     }
 
     @Override
@@ -92,15 +92,12 @@ public class MainActivity extends AppCompatActivity
 
         runOnUiThread(() -> {
 
-            // only update if amp page visible
-            // I would like to have this isAmpPageVisible coming from UI object actually TODO
+
             if (currentPage == Page.AMP && ampPageController != null) {
                 ampPageController.refresh();
-            } else if (currentPage == Page.EFFECTS && ampPageController != null) {
+            } else if (currentPage == Page.EFFECTS && effectsPageController != null) {
                 effectsPageController.refresh();
             }
-
-
             Log.d(TAG, "UI refreshed from state change read");
         });
     }
@@ -140,13 +137,6 @@ public class MainActivity extends AppCompatActivity
     /* -------------------------------------------------------------- */
 
     /* ----------------------UI HANDLERS-------------------------------- */
-
-    /* Note that this part creates the Page Controllers object all over again
-     *  And I believe we are fine with this small app for now.
-     *  Maybe we can optimize it ..... but probably i need more UI knowledge of inflataion
-     *  Currently, i dont see it as a big problem.
-     * TODO look this over again
-     *  */
     private void loadPage(int layoutId) {
         FrameLayout container = findViewById(R.id.main_container);
 
@@ -160,11 +150,7 @@ public class MainActivity extends AppCompatActivity
         if (layoutId == R.layout.amp_page) {
 
             currentPage = Page.AMP;
-            ampPageController = new AmpPageController(
-                    pageView,
-                    controller,
-                    ampState
-            );
+            ampPageController = new AmpPageController(pageView, controller, ampState);
             ampPageController.init();
 
         } else if (layoutId == R.layout.effects_page) {
@@ -175,15 +161,10 @@ public class MainActivity extends AppCompatActivity
 
         } else if (layoutId == R.layout.patch_page) {
             currentPage = Page.PATCH;
-            patchPageController =
-                    new PatchPageController(
-                            this,
-                            pageView,
-                            ampState,
-                            controller
-                    );
+            patchPageController = new PatchPageController(pageView, ampState, controller, patchManager);
 
             patchPageController.init();
+
         } else {
             // well ... hmmm
         }
@@ -231,6 +212,10 @@ public class MainActivity extends AppCompatActivity
 
         // register usb receiver ... this ultimately starts the USB manager functionality.
         registerUsbReceiver();
+
+        // reload cache of patches, maybe do this on a separate thread?
+        patchManager = new PatchManager(this);
+        patchManager.reloadCache();
 
         // Try Finding the device in case it was already connected when the amp came up.
         usbConnectionManager.detectAndConnect();

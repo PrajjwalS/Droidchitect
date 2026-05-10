@@ -28,9 +28,9 @@ public class AmpPageController {
 
     // ================= INIT =================
     public void init() {
-        initKnobs(); // these are UI object init
-        initVoices(); // these are UI object init
-        refresh();  // refresh with the current AMP State
+        initKnobs();    // these are UI object init
+        initVoices();   // these are UI object init
+        refresh();      // refresh with the current AMP State
     }
 
     // ================= REFRESH =================
@@ -73,13 +73,13 @@ public class AmpPageController {
             int ampValue = (int) Math.round(adjusted * 127.0 / 100.0);
 
             if (getter.get() != ampValue) {
+                state.setPatchDirty(true);
                 setter.accept(ampValue);
             }
         });
     }
 
     private void applyStateToUI() {
-
         setKnob(R.id.knob_gain, state.getGain());
         setKnob(R.id.knob_volume, state.getVolume());
         setKnob(R.id.knob_bass, state.getBass());
@@ -138,6 +138,7 @@ public class AmpPageController {
             );
 
             if (state.getVoice() != voiceIndex) {
+                state.setPatchDirty(true);
                 controller.setVoice(voiceIndex);
             }
 

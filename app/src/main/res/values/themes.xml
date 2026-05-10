@@ -129,10 +129,10 @@
     </style>
 
     <!-- ===================================================== -->
-    <!-- VOICE BUTTON -->
+    <!-- VOICE BUTTON | CHIP BUTTONS-->
     <!-- ===================================================== -->
 
-    <style name="VoiceButton">
+    <style name="ChipButton">
 
         <item name="android:layout_width">
             0dp

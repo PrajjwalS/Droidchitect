@@ -10,6 +10,8 @@ import com.example.droidchitect.patch.PatchLoader;
 public class AmpTester {
     Patch patchA = new Patch();
     Patch patchB = new Patch();
+    Patch patchC = new Patch();
+    Patch patchD = new Patch();
 
     private void initPatchA() {
         patchA.name = "A";
@@ -73,9 +75,73 @@ public class AmpTester {
         patchB.noiseGateAmount = 0;
     }
 
+    private void initPatchC() {
+        patchC.name = "C";
+        patchC.voice = 3;
+        patchC.gain = 1;
+        patchC.volume = 2;
+        patchC.bass = 11;
+        patchC.middle = 5;
+        patchC.treble = 17;
+        patchC.isf = 52;
+        patchC.presence = 2;
+        patchC.resonance = 0;
+        patchC.modulationEnabled = true;
+        patchC.modulationType = 2;
+        patchC.modulationParam1 = 1;
+        patchC.modulationParam2 = 17;
+        patchC.modulationParam3 = 5;
+        patchC.modulationParam4 = 1;
+        patchC.delayEnabled = true;
+        patchC.delayType = 2;
+        patchC.delayLevel = 1;
+        patchC.delayFeedback = 11;
+        patchC.delayTime = 100;
+        patchC.reverbEnabled = true;
+        patchC.reverbType = 3;
+        patchC.reverbLevel = 17;
+        patchC.reverbSize = 3;
+        patchC.noiseGateEnabled = true;
+        patchC.noiseGateSensitivity = 17;
+        patchC.noiseGateAmount = 22;
+    }
+
+    private void initPatchD() {
+        patchD.name = "D";
+        patchD.voice = 4;
+        patchD.gain = 0;
+        patchD.volume = 0;
+        patchD.bass = 0;
+        patchD.middle = 0;
+        patchD.treble = 124;
+        patchD.isf = 0;
+        patchD.presence = 12;
+        patchD.resonance = 20;
+        patchD.modulationEnabled = true;
+        patchD.modulationType = 0;
+        patchD.modulationParam1 = 21;
+        patchD.modulationParam2 = 7;
+        patchD.modulationParam3 = 55;
+        patchD.modulationParam4 = 11;
+        patchD.delayEnabled = true;
+        patchD.delayType = 0;
+        patchD.delayLevel = 0;
+        patchD.delayFeedback = 0;
+        patchD.delayTime = 1022;
+        patchD.reverbEnabled = true;
+        patchD.reverbType = 2;
+        patchD.reverbLevel = 73;
+        patchD.reverbSize = 22;
+        patchD.noiseGateEnabled = true;
+        patchD.noiseGateSensitivity = 0;
+        patchD.noiseGateAmount = 0;
+    }
+
     public AmpTester() {
         initPatchA();
         initPatchB();
+        initPatchC();
+        initPatchD();
     }
 
     /* Stress for figuring out patch command delays
@@ -256,19 +322,34 @@ public class AmpTester {
                 PatchLoader.applyPatch(
                         target,
                         controller,
-                        ampState
+                        ampState,
+                        new PatchLoader.PatchLoadCallback() {
+
+                            @Override
+                            public void onSuccess(Patch appliedPatch) {
+                                //
+                            }
+
+                            @Override
+                            public void onFailure(Patch failedPatch) {
+                                //
+                            }
+                        }
                 );
 
                 // =============================================
                 // WAIT UNTIL PATCH THREAD FINISHES
                 // =============================================
 
-                while (PatchLoader.isBusy()) {
+                while (true) {
+                    Thread t = PatchLoader.getCurrentPatchThread();
+
+                    if (t == null || !t.isAlive()) {
+                        break;
+                    }
 
                     try {
-
-                        Thread.sleep(5);
-
+                        Thread.sleep(2);
                     } catch (Exception ignored) {
                     }
                 }
@@ -473,4 +554,161 @@ public class AmpTester {
 
         }).start();
     }
+
+
+
+    /*
+    * Stess Testing the thread sync patch overtake apply functionality.
+    *
+    * Last run:
+    *   2026-05-10 10:46:56.568 21259-21381 PATCH_THREAD_TEST       com.example.droidchitect             I  ====================================
+        2026-05-10 10:46:56.568 21259-21381 PATCH_THREAD_TEST       com.example.droidchitect             I  FINAL RESULTS
+        2026-05-10 10:46:56.569 21259-21381 PATCH_THREAD_TEST       com.example.droidchitect             I  Passes = 100
+        2026-05-10 10:46:56.569 21259-21381 PATCH_THREAD_TEST       com.example.droidchitect             I  Failures = 0
+        2026-05-10 10:46:56.569 21259-21381 PATCH_THREAD_TEST       com.example.droidchitect             I  ====================================
+    *
+    * */
+    public void runPatchThreadTakeoverTest(
+            AmpController controller,
+            AmpState ampState
+    ) {
+
+        new Thread(() -> {
+
+            int totalRuns = 100;
+            int passes = 0;
+            int failures = 0;
+
+            Log.i(
+                    "PATCH_THREAD_TEST",
+                    "STARTING THREAD TAKEOVER TEST"
+            );
+
+
+            for (int run = 0; run < totalRuns; run++) {
+
+                // CHOOSE EXPECTED FINAL PATCH
+                Patch[] patches = {
+                        patchA,
+                        patchB,
+                        patchC,
+                        patchD
+                };
+
+                Patch expectedFinalPatch = patches[run % patches.length];
+
+                // FIRE MANY APPLY REQUESTS
+                for (int i = 0; i < 10; i++) {
+
+                    Patch p;
+
+                    if (i == 9) {
+                        // FINAL PATCH MUST WIN
+                        p = expectedFinalPatch;
+                    } else {
+                        p = patches[i % patches.length];
+                    }
+
+                    Patch finalPatch = p;
+                    PatchLoader.applyPatch(
+                            finalPatch,
+                            controller,
+                            ampState,
+                            new PatchLoader.PatchLoadCallback() {
+
+                                @Override
+                                public void onSuccess(Patch appliedPatch) {
+                                    //
+                                }
+
+                                @Override
+                                public void onFailure(Patch failedPatch) {
+                                    //
+                                }
+                            }
+                    );
+                }
+
+                // WAIT For sometime before validation
+                try {
+
+                    Thread.sleep(1000);
+
+                } catch (Exception ignored) {
+                }
+
+
+                // VALIDATE FINAL STATE
+
+
+                boolean success =
+                        expectedFinalPatch
+                                .roughlyEquals(
+                                        ampState
+                                );
+
+                if (success) {
+
+                    passes++;
+
+                    Log.i(
+                            "PATCH_THREAD_TEST",
+                            "PASS run=" + run
+                    );
+
+                } else {
+
+                    failures++;
+
+                    Log.e(
+                            "PATCH_THREAD_TEST",
+                            "FAIL run=" + run
+                    );
+
+                    Log.e(
+                            "PATCH_THREAD_TEST",
+                            "EXPECTED:\n"
+                                    + expectedFinalPatch
+                    );
+
+                    Log.e(
+                            "PATCH_THREAD_TEST",
+                            "ACTUAL:\n"
+                                    + ampState
+                    );
+                }
+            }
+
+            // =============================================
+            // FINAL RESULTS
+            // =============================================
+
+            Log.i(
+                    "PATCH_THREAD_TEST",
+                    "===================================="
+            );
+
+            Log.i(
+                    "PATCH_THREAD_TEST",
+                    "FINAL RESULTS"
+            );
+
+            Log.i(
+                    "PATCH_THREAD_TEST",
+                    "Passes = " + passes
+            );
+
+            Log.i(
+                    "PATCH_THREAD_TEST",
+                    "Failures = " + failures
+            );
+
+            Log.i(
+                    "PATCH_THREAD_TEST",
+                    "===================================="
+            );
+
+        }).start();
+    }
+
 }

@@ -22,6 +22,20 @@ public class PatchManager {
 
     private final Gson gson;
 
+    private final List<PatchEntry> cachedPatches = new ArrayList<>();
+
+    // =========================================================
+    // PATCH ENTRY
+    // =========================================================
+
+    public static class PatchEntry {
+        public final Patch patch;
+        public final String fileName;
+        public PatchEntry(Patch patch, String fileName) {
+            this.patch = patch;
+            this.fileName = fileName;
+        }
+    }
 
     // =========================================================
     // CONSTRUCTOR
@@ -172,12 +186,9 @@ public class PatchManager {
     public String generateUniquePatchName(
             String baseName
     ) {
-
         try {
-
             if (baseName == null ||
                     baseName.trim().isEmpty()) {
-
                 baseName = "Imported Patch";
             }
 
@@ -196,7 +207,6 @@ public class PatchManager {
                     );
 
             if (!originalFile.exists()) {
-
                 return baseName;
             }
 
@@ -223,13 +233,10 @@ public class PatchManager {
                         );
 
                 if (!candidateFile.exists()) {
-
                     return candidate;
                 }
-
                 index++;
             }
-
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -247,5 +254,35 @@ public class PatchManager {
         );
     }
 
+
+    public void reloadCache() {
+
+        cachedPatches.clear();
+
+        List<String> patchFiles =
+                listPatchFiles();
+
+        for (String fileName : patchFiles) {
+
+            Patch patch =
+                    loadPatch(fileName);
+
+            if (patch == null) {
+                continue;
+            }
+
+            cachedPatches.add(
+                    new PatchEntry(
+                            patch,
+                            fileName
+                    )
+            );
+        }
+    }
+
+    public List<PatchEntry> getCachedPatches() {
+
+        return new ArrayList<>(cachedPatches);
+    }
 
 }

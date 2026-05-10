@@ -57,6 +57,29 @@ public class AmpState {
         public boolean enabled;
     }
 
+
+    /*Patch related */
+    private String currentPatchName = null;
+    private boolean patchDirty = false;
+
+    public void setCurrentPatchName(String name) {
+        currentPatchName = name;
+    }
+
+    public String getCurrentPatchName() {
+        return currentPatchName;
+    }
+
+    public void setPatchDirty(boolean dirty) {
+        patchDirty = dirty;
+    }
+
+    public boolean isPatchDirty() {
+        return patchDirty;
+    }
+ /***************************************/
+
+
     @Override
     public String toString() {
 

@@ -1,6 +1,7 @@
 package com.example.droidchitect.mainUI;
 
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -216,9 +217,15 @@ public class EffectsPageController {
 
         setupEffectSwitch();
 
-        initKnobs();
-
+        // FIRST SHOW PAGE
         showModulation();
+
+        // THEN SYNC UI FROM REAL AMP STATE
+        refresh();
+
+        // ONLY AFTER UI IS CORRECT
+        // attach listeners
+        initKnobs();
     }
 
     // =========================================================
@@ -242,6 +249,8 @@ public class EffectsPageController {
     }
 
     private void refreshModulationLayout() {
+
+
 
         int type = ampState.getModulationType();
 
@@ -327,7 +336,7 @@ public class EffectsPageController {
                     int value = isChecked ? 1 : 0;
 
                     if (ampState.getModulationParam2() != value) {
-
+                        ampState.setPatchDirty(true);
                         controller.setModulationParam2(value);
                     }
                 });
@@ -364,6 +373,7 @@ public class EffectsPageController {
         typePhaser.setOnClickListener(v -> {
 
             if (ampState.getModulationType() != 0) {
+                ampState.setPatchDirty(true);
                 controller.setModulationType(0);
             }
         });
@@ -371,6 +381,7 @@ public class EffectsPageController {
         typeChorus.setOnClickListener(v -> {
 
             if (ampState.getModulationType() != 1) {
+                ampState.setPatchDirty(true);
                 controller.setModulationType(1);
             }
         });
@@ -378,6 +389,7 @@ public class EffectsPageController {
         typeEnvelope.setOnClickListener(v -> {
 
             if (ampState.getModulationType() != 2) {
+                ampState.setPatchDirty(true);
                 controller.setModulationType(2);
             }
         });
@@ -385,6 +397,7 @@ public class EffectsPageController {
         typeTremolo.setOnClickListener(v -> {
 
             if (ampState.getModulationType() != 3) {
+                ampState.setPatchDirty(true);
                 controller.setModulationType(3);
             }
         });
@@ -457,7 +470,6 @@ public class EffectsPageController {
         reverbControls.setVisibility(View.GONE);
 
         noiseGateControls.setVisibility(View.GONE);
-        noiseGateControls.setVisibility(View.GONE);
 
         refreshSwitchUI();
     }
@@ -514,7 +526,6 @@ public class EffectsPageController {
         reverbControls.setVisibility(View.VISIBLE);
 
         noiseGateControls.setVisibility(View.GONE);
-        noiseGateControls.setVisibility(View.GONE);
 
         refreshSwitchUI();
     }
@@ -548,21 +559,25 @@ public class EffectsPageController {
 
             if (currentEffect == EffectPage.MODULATION) {
                 if (ampState.isModulationEnabled() != isChecked) {
+                    ampState.setPatchDirty(true);
                     controller.toggleMod(isChecked);
                 }
             } else if (currentEffect == EffectPage.DELAY) {
 
                 if (ampState.isDelayEnabled() != isChecked) {
+                    ampState.setPatchDirty(true);
                     controller.toggleDelay(isChecked);
                 }
 
             } else if (currentEffect == EffectPage.REVERB) {
 
                 if (ampState.isReverbEnabled() != isChecked) {
+                    ampState.setPatchDirty(true);
                     controller.toggleReverb(isChecked);
                 }
             } else if (currentEffect == EffectPage.NOISE_GATE)  {
                 if (ampState.isNoiseGateEnabled() != isChecked) {
+                    ampState.setPatchDirty(true);
                     controller.toggleNoiseGate(isChecked);
                 }
             }
@@ -604,6 +619,7 @@ public class EffectsPageController {
         setupKnob(knobDelayLevel, 0, 127, value -> {
 
             if (ampState.getDelayLevel() != value) {
+                ampState.setPatchDirty(true);
                 controller.setDelayLevel(value);
             }
         });
@@ -612,6 +628,7 @@ public class EffectsPageController {
         setupKnob(knobDelayFeedback, 0, 31, value -> {
 
             if (ampState.getDelayFeedback() != value) {
+                ampState.setPatchDirty(true);
                 controller.setDelayFeedback(value);
             }
         });
@@ -620,6 +637,7 @@ public class EffectsPageController {
         setupKnob(knobDelayTime, 100, 2000, value -> {
 
             if (ampState.getDelayTime() != value) {
+                ampState.setPatchDirty(true);
                 controller.setDelayTime(value);
             }
         });
@@ -630,6 +648,7 @@ public class EffectsPageController {
         setupKnob(knobReverbLevel, 0, 127, value -> {
 
             if (ampState.getReverbLevel() != value) {
+                ampState.setPatchDirty(true);
                 controller.setReverbLevel(value);
             }
         });
@@ -638,6 +657,7 @@ public class EffectsPageController {
         setupKnob(knobReverbSize, 0, 31, value -> {
 
             if (ampState.getReverbSize() != value) {
+                ampState.setPatchDirty(true);
                 controller.setReverbSize(value);
             }
         });
@@ -647,6 +667,7 @@ public class EffectsPageController {
         setupKnob(knobGateSensitivity, 0, 127, value -> {
 
             if (ampState.getNoiseGateSensitivity() != value) {
+                ampState.setPatchDirty(true);
                 controller.setNoiseGateSensitivity(value);
             }
         });
@@ -654,6 +675,7 @@ public class EffectsPageController {
         setupKnob(knobGateAmount, 0, 127, value -> {
 
             if (ampState.getNoiseGateAmount() != value) {
+                ampState.setPatchDirty(true);
                 controller.setNoiseGateAmount(value);
             }
         });
@@ -662,29 +684,30 @@ public class EffectsPageController {
         // ================= MODULATION =================
 
         setupKnob(knobMod1, 0, 31, value -> {
-
             if (ampState.getModulationParam1() != value) {
+                Log.d("FX_DEBUG", "SENDING MOD PARAM1=" + value);
+                ampState.setPatchDirty(true);
                 controller.setModulationParam1(value);
             }
         });
 
         setupKnob(knobMod2, 0, 127, value -> {
-
             if (ampState.getModulationParam2() != value) {
+                ampState.setPatchDirty(true);
                 controller.setModulationParam2(value);
             }
         });
 
         setupKnob(knobMod3, 0, 127, value -> {
-
             if (ampState.getModulationParam3() != value) {
+                ampState.setPatchDirty(true);
                 controller.setModulationParam3(value);
             }
         });
 
         setupKnob(knobMod4, 0, 127, value -> {
-
             if (ampState.getModulationParam4() != value) {
+                ampState.setPatchDirty(true);
                 controller.setModulationParam4(value);
             }
         });
@@ -714,22 +737,49 @@ public class EffectsPageController {
             RotaryKnob knob,
             int min,
             int max,
-            KnobCallback callback) {
+            KnobCallback callback
+    ) {
 
         knob.setProgressChangeListener(value -> {
 
             int adjusted = value;
 
-            if (value <= 3) adjusted = 0;
-            else if (value >= 97) adjusted = 100;
+            // =====================================================
+            // EDGE SNAP
+            // =====================================================
+
+            if (value <= 3) {
+                adjusted = 0;
+            }
+
+            else if (value >= 97) {
+                adjusted = 100;
+            }
+
+            // =====================================================
+            // SNAP UI
+            // =====================================================
 
             if (adjusted != value) {
                 knob.setCurrentProgress(adjusted);
                 return;
             }
 
-            int mappedValue = min + (int)Math.round(
-                    (adjusted / 100.0) * (max - min)
+            // =====================================================
+            // MAP TO AMP VALUE
+            // =====================================================
+
+            int mappedValue = toAmpValue(adjusted, min, max);
+
+            // =====================================================
+            // SEND
+            // =====================================================
+            Log.d(
+                    "FX_DEBUG",
+                    "Knob callback value=" + value
+                            + " mapped=" + mappedValue
+                            + " min=" + min
+                            + " max=" + max
             );
 
             callback.onChange(mappedValue);
@@ -745,27 +795,28 @@ public class EffectsPageController {
         typeLinear.setOnClickListener(v -> {
 
             if (ampState.getDelayType() != 0) {
+                ampState.setPatchDirty(true);
                 controller.setDelayType(0);
             }
         });
 
         typeAnalogue.setOnClickListener(v -> {
-
             if (ampState.getDelayType() != 1) {
+                ampState.setPatchDirty(true);
                 controller.setDelayType(1);
             }
         });
 
         typeTape.setOnClickListener(v -> {
-
             if (ampState.getDelayType() != 2) {
+                ampState.setPatchDirty(true);
                 controller.setDelayType(2);
             }
         });
 
         typeMulti.setOnClickListener(v -> {
-
             if (ampState.getDelayType() != 3) {
+                ampState.setPatchDirty(true);
                 controller.setDelayType(3);
             }
         });
@@ -844,6 +895,7 @@ public class EffectsPageController {
         typeRoom.setOnClickListener(v -> {
 
             if (ampState.getReverbType() != 0) {
+                ampState.setPatchDirty(true);
                 controller.setReverbType(0);
             }
 
@@ -853,6 +905,7 @@ public class EffectsPageController {
         typeHall.setOnClickListener(v -> {
 
             if (ampState.getReverbType() != 1) {
+                ampState.setPatchDirty(true);
                 controller.setReverbType(1);
             }
 
@@ -862,6 +915,7 @@ public class EffectsPageController {
         typeSpring.setOnClickListener(v -> {
 
             if (ampState.getReverbType() != 2) {
+                ampState.setPatchDirty(true);
                 controller.setReverbType(2);
             }
 
@@ -871,6 +925,7 @@ public class EffectsPageController {
         typePlate.setOnClickListener(v -> {
 
             if (ampState.getReverbType() != 3) {
+                ampState.setPatchDirty(true);
                 controller.setReverbType(3);
             }
 
@@ -946,13 +1001,16 @@ public class EffectsPageController {
     // UTILS
     // =========================================================
 
-    private int toKnobProgress(int ampValue) {
+    private int toAmpValue(
+            int knobProgress,
+            int min,
+            int max
+    ) {
 
-        return (int) Math.round(
-                ampValue * 100.0 / 127.0
+        return min + (int)Math.round(
+                (knobProgress / 100.0) * (max - min)
         );
     }
-
 
 
 
@@ -978,45 +1036,90 @@ public class EffectsPageController {
         reverbControls.setVisibility(View.GONE);
 
         noiseGateControls.setVisibility(View.VISIBLE);
-        noiseGateControls.setVisibility(View.VISIBLE);
 
         refreshSwitchUI();
     }
 
 
-
     private void refreshModulationUI() {
 
-        knobMod1.setCurrentProgress(
-                toKnobProgress(
-                        ampState.getModulationParam1(),
-                        0,
-                        31
-                )
+        int type = ampState.getModulationType();
+
+        // =====================================================
+        // PARAM 1
+        // =====================================================
+
+        int mod1Progress = toKnobProgress( ampState.getModulationParam1(), 0, 31);
+
+        Log.d(
+                "FX_DEBUG",
+                "refreshModulationUI() "
+                        + "type=" + type
+                        + " knobMod1 progress="
+                        + mod1Progress
+                        + " ampValue="
+                        + ampState.getModulationParam1()
         );
 
-        knobMod2.setCurrentProgress(
-                toKnobProgress(
-                        ampState.getModulationParam2(),
-                        0,
-                        127
-                )
+        knobMod1.setCurrentProgress(mod1Progress);
+
+        // =====================================================
+        // PHASER / CHORUS
+        // =====================================================
+
+        if (type == 0 || type == 1) {
+            int mod2Progress = toKnobProgress(ampState.getModulationParam2(), 0, 127);
+
+            Log.d(
+                    "FX_DEBUG",
+                    "refreshModulationUI() "
+                            + "knobMod2 progress="
+                            + mod2Progress
+                            + " ampValue="
+                            + ampState.getModulationParam2()
+            );
+
+            knobMod2.setCurrentProgress(mod2Progress);
+        }
+
+        // =====================================================
+        // PARAM 3
+        // =====================================================
+
+        int mod3Progress =
+                toKnobProgress(ampState.getModulationParam3(), 0, 127);
+
+        Log.d(
+                "FX_DEBUG",
+                "refreshModulationUI() "
+                        + "knobMod3 progress="
+                        + mod3Progress
+                        + " ampValue="
+                        + ampState.getModulationParam3()
         );
 
-        knobMod3.setCurrentProgress(
-                toKnobProgress(
-                        ampState.getModulationParam3(),
-                        0,
-                        127
-                )
-        );
+        knobMod3.setCurrentProgress(mod3Progress);
 
-        knobMod4.setCurrentProgress(
-                toKnobProgress(
-                        ampState.getModulationParam4(),
-                        0,
-                        127
-                )
-        );
+        // =====================================================
+        // PHASER / CHORUS / TREMOLO
+        // =====================================================
+
+        if (type == 0 || type == 1 || type == 3) {
+
+            int mod4Progress =
+                    toKnobProgress(ampState.getModulationParam4(), 0, 127);
+
+            Log.d(
+                    "FX_DEBUG",
+                    "refreshModulationUI() "
+                            + "knobMod4 progress="
+                            + mod4Progress
+                            + " ampValue="
+                            + ampState.getModulationParam4()
+            );
+
+            knobMod4.setCurrentProgress(mod4Progress);
+        }
     }
+
 }

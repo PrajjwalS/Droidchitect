@@ -23,17 +23,17 @@
 
             <Button
                 android:id="@+id/voice_clean_warm"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Clean Warm" />
 
             <Button
                 android:id="@+id/voice_clean_bright"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Clean Bright" />
 
             <Button
                 android:id="@+id/voice_crunch"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Crunch" />
 
         </LinearLayout>
@@ -47,17 +47,17 @@
 
             <Button
                 android:id="@+id/voice_super_crunch"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="Super Crunch" />
 
             <Button
                 android:id="@+id/voice_od1"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="OD1" />
 
             <Button
                 android:id="@+id/voice_od2"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:text="OD2" />
 
         </LinearLayout>

@@ -177,7 +177,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/exportPatchButton"
-                    style="@style/VoiceButton"
+                    style="@style/ChipButton"
                     android:text="Export All"
                     android:textAllCaps="false" />
 
@@ -187,7 +187,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/saveCurrentPatchButton"
-                style="@style/VoiceButton"
+                style="@style/ChipButton"
                 android:layout_width="match_parent"
                 android:layout_marginTop="4dp"
                 android:layout_weight="0"

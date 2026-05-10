@@ -5,6 +5,8 @@
     <color name="bg_primary">#121212</color>
     <color name="bg_secondary">#2A2A2A</color>
     <color name="bg_tertiary">#2A2A2A</color>
+    <color name="fg_tertiary">#3B3B3B</color>
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#AAAAAA</color>
+
 </resources>
