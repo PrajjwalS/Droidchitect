@@ -126,6 +126,17 @@ public class PatchManager {
 
             reader.close();
 
+            if (!isPatchSane(patch)) {
+
+                Log.e(
+                        TAG,
+                        "Invalid patch schema: " + filename
+                );
+
+                return null;
+            }
+
+
             return patch;
 
         } catch (Exception e) {
@@ -283,6 +294,232 @@ public class PatchManager {
     public List<PatchEntry> getCachedPatches() {
 
         return new ArrayList<>(cachedPatches);
+    }
+
+
+    // Patch Sanity Related
+    private boolean isPatchSane(
+            Patch patch
+    ) {
+
+        if (patch == null) {
+            return false;
+        }
+
+        switch (patch.version) {
+
+            case 1:
+                return isPatchSaneV1(patch);
+
+            default:
+                return false;
+        }
+    }
+
+    private boolean isPatchSaneV1(
+            Patch patch
+    ) {
+
+        try {
+
+            // =============================================
+            // REQUIRED OBJECTS
+            // =============================================
+
+            if (patch == null) {
+                return false;
+            }
+
+            if (patch.name == null) {
+                return false;
+            }
+
+            if (patch.creator == null) {
+                return false;
+            }
+
+            if (patch.tags == null) {
+                return false;
+            }
+
+            // =============================================
+            // TAGS
+            // =============================================
+
+            for (String tag : patch.tags) {
+
+                if (tag == null) {
+                    return false;
+                }
+            }
+
+            // =============================================
+            // VERSION
+            // =============================================
+
+            if (patch.version != 1) {
+                return false;
+            }
+
+            // =============================================
+            // AMP
+            // =============================================
+
+            if (!inRange(patch.voice, 0, 5)) {
+                return false;
+            }
+
+            if (!inRange(patch.gain, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.volume, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.bass, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.middle, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.treble, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.isf, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.presence, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.resonance, 0, 127)) {
+                return false;
+            }
+
+            // =============================================
+            // MODULATION
+            // =============================================
+
+            // basic existence touch
+            boolean modulationEnabled =
+                    patch.modulationEnabled;
+
+            if (!inRange(patch.modulationType, 0, 3)) {
+                return false;
+            }
+
+            if (!inRange(patch.modulationParam1, 0, 31)) {
+                return false;
+            }
+
+            if (!inRange(patch.modulationParam2, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.modulationParam3, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.modulationParam4, 0, 127)) {
+                return false;
+            }
+
+            // =============================================
+            // DELAY
+            // =============================================
+
+            // basic existence touch
+            boolean delayEnabled =
+                    patch.delayEnabled;
+
+            if (!inRange(patch.delayType, 0, 3)) {
+                return false;
+            }
+
+            if (!inRange(patch.delayLevel, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.delayFeedback, 0, 31)) {
+                return false;
+            }
+
+            if (!inRange(patch.delayTime, 100, 2000)) {
+                return false;
+            }
+
+            // =============================================
+            // REVERB
+            // =============================================
+
+            // basic existence touch
+            boolean reverbEnabled =
+                    patch.reverbEnabled;
+
+            if (!inRange(patch.reverbType, 0, 3)) {
+                return false;
+            }
+
+            if (!inRange(patch.reverbLevel, 0, 127)) {
+                return false;
+            }
+
+            if (!inRange(patch.reverbSize, 0, 31)) {
+                return false;
+            }
+
+            // =============================================
+            // NOISE GATE
+            // =============================================
+
+            // basic existence touch
+            boolean noiseGateEnabled =
+                    patch.noiseGateEnabled;
+
+            if (!inRange(
+                    patch.noiseGateSensitivity,
+                    0,
+                    127
+            )) {
+                return false;
+            }
+
+            if (!inRange(
+                    patch.noiseGateAmount,
+                    0,
+                    127
+            )) {
+                return false;
+            }
+
+            return true;
+
+        } catch (Exception e) {
+
+            Log.e(
+                    TAG,
+                    "Patch sanity validation failed",
+                    e
+            );
+
+            return false;
+        }
+    }
+
+
+    private boolean inRange(
+            int value,
+            int min,
+            int max
+    ) {
+
+        return value >= min &&
+                value <= max;
     }
 
 }
