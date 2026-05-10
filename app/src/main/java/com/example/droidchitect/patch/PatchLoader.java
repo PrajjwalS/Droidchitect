@@ -409,7 +409,15 @@ public class PatchLoader {
                 }
 
                 // Let caller know Patch Load failed
-                Log.e(TAG, "Patch synchronization failed");
+                Log.e(
+                        TAG,
+                        "Patch synchronization failed\n\n"
+                                + "EXPECTED PATCH:\n"
+                                + patch
+                                + "\n\n"
+                                + "ACTUAL AMP STATE:\n"
+                                + ampState
+                );
                 if (callback != null) {
                     callback.onFailure(patch);
                 }

@@ -4,6 +4,7 @@ package com.example.droidchitect.mainUI;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.droidchitect.patch.PatchDialogs;
+import com.example.droidchitect.live.LiveConfigManager;
+
 public class PatchPageController {
 
     // =========================================================
@@ -71,6 +74,9 @@ public class PatchPageController {
 
     private final TextInputEditText patchSearchInput;
 
+    // Live stuff
+    LiveConfigManager liveConfigManager;
+
     // =========================================================
     // CONSTRUCTOR
     // =========================================================
@@ -79,8 +85,10 @@ public class PatchPageController {
             View root,
             AmpState ampState,
             AmpController controller,
-            PatchManager patchManager)
+            PatchManager patchManager,
+            LiveConfigManager liveConfigManager)
     {
+        this.liveConfigManager = liveConfigManager;
         this.root = root;
         this.ampState = ampState;
         this.controller = controller;
@@ -537,8 +545,38 @@ public class PatchPageController {
                         success -> {
 
                             if (success) {
+                                // update currently cached file names
                                 patchManager.reloadCache();
+
+                                // handle live page's configs
+                                liveConfigManager.removeDeletedPatchReferences(
+                                        entry.fileName
+                                );
+
+                                // refresh the patch list
                                 refreshPatchList();
+                                Log.d(
+                                        "PATCH_DELETE",
+                                        "current="
+                                                + ampState.getCurrentPatchName()
+                                                + " deleting="
+                                                + entry.patch.name
+                                );
+
+                                // handle if currently selected patch is
+                                if (entry.patch.name.equals(ampState.getCurrentPatchName())) {
+                                    currentPatch = null;
+                                    ampState.setCurrentPatchName(
+                                            null
+                                    );
+                                    ampState.setPatchDirty(
+                                            false
+                                    );
+                                    refreshCurrentPatchCard();
+                                }
+
+
+
                                 android.widget.Toast.makeText(
                                         root.getContext(),
                                         "Patch deleted",

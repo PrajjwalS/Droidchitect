@@ -50,6 +50,7 @@
 
     <!-- ================= BOTTOM NAV BAR ================= -->
     <LinearLayout
+        android:id="@+id/bottom_nav_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_nav_height"
         android:layout_margin="10dp"
@@ -60,7 +61,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="6dp"
-        android:weightSum="3">
+        android:weightSum="4">
 
         <!-- AMP -->
         <TextView
@@ -72,7 +73,7 @@
             android:gravity="center"
             android:text="AMP"
             android:textColor="@color/text_primary"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
 
         <View
             android:layout_width="1dp"
@@ -100,7 +101,7 @@
 
         <!-- PATCH -->
         <TextView
-            android:id="@+id/tab_live"
+            android:id="@+id/tab_patch"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -109,6 +110,26 @@
             android:text="PATCH"
             android:textColor="@color/text_secondary"
             android:textStyle="normal" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:background="@color/bg_tertiary" />
+
+        <!-- Live -->
+        <TextView
+            android:id="@+id/tab_live"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="LIVE"
+            android:textColor="@color/text_secondary"
+            android:textStyle="normal" />
+
+
 
     </LinearLayout>
 

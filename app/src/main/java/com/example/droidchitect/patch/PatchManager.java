@@ -52,13 +52,13 @@ public class PatchManager {
 
 
     // =========================================================
-    // PATCH DIRECTORY
+    // PATCHES DIRECTORY
     // =========================================================
 
     private File getPatchesDirectory() {
 
         File dir = new File(
-                context.getFilesDir(),
+                context.getExternalFilesDir(null),
                 PATCH_FOLDER
         );
 

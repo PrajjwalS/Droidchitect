@@ -1,4 +1,4 @@
-package com.example.droidchitect.mainUI;
+package com.example.droidchitect;
 
 import android.content.*;
 import android.hardware.usb.UsbManager;
@@ -6,19 +6,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 // import com.example.droidchitect.AmpTester;
-import com.example.droidchitect.AmpTester;
-import com.example.droidchitect.R;
 import com.example.droidchitect.amp.AmpController;
 import com.example.droidchitect.amp.AmpState;
 
 import com.example.droidchitect.live.LiveConfigManager;
+import com.example.droidchitect.mainUI.AmpPageController;
+import com.example.droidchitect.mainUI.EffectsPageController;
+import com.example.droidchitect.mainUI.LivePageController;
+import com.example.droidchitect.mainUI.PatchPageController;
+import com.example.droidchitect.mainUI.ShellController;
 import com.example.droidchitect.patch.PatchManager;
 import com.example.droidchitect.usb.UsbConnectionManager;
 

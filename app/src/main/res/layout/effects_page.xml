@@ -113,7 +113,7 @@
             android:layout_height="wrap_content"
             android:checked="false"
             app:thumbTint="@color/text_primary"
-            app:trackTint="@color/accent_orange" />
+            app:trackTint="@color/switch_track_colors" />
 
     </LinearLayout>
 

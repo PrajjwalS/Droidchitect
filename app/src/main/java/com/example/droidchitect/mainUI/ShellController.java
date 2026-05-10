@@ -3,7 +3,6 @@ package com.example.droidchitect.mainUI;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.droidchitect.R;
@@ -14,6 +13,7 @@ public class ShellController {
         void onAmpSelected();
         void onEffectsSelected();
         void onPatchSelected();
+        void onLiveSelected();
     }
 
     private final View root;
@@ -22,6 +22,7 @@ public class ShellController {
     private final TextView tabAmp;
     private final TextView tabEffects;
     private final TextView tabPatch;
+    private final TextView tabLive;
 
     private final TextView statusChip;
 
@@ -34,7 +35,9 @@ public class ShellController {
 
         tabAmp = root.findViewById(R.id.tab_amp);
         tabEffects = root.findViewById(R.id.tab_effects);
-        tabPatch = root.findViewById(R.id.tab_live);
+        tabPatch = root.findViewById(R.id.tab_patch);
+        tabLive = root.findViewById(R.id.tab_live);
+
 
         tabAmp.setOnClickListener(v -> {
             selectAmp();
@@ -49,6 +52,11 @@ public class ShellController {
         tabPatch.setOnClickListener(v -> {
             selectPatch();
             listener.onPatchSelected();
+        });
+
+        tabLive.setOnClickListener(v -> {
+            selectLive();
+            listener.onLiveSelected();
         });
     }
 
@@ -90,18 +98,28 @@ public class ShellController {
         setSelected(tabAmp);
         setUnselected(tabEffects);
         setUnselected(tabPatch);
+        setUnselected(tabLive);
     }
 
     public void selectEffects() {
         setSelected(tabEffects);
         setUnselected(tabAmp);
         setUnselected(tabPatch);
+        setUnselected(tabLive);
     }
 
     public void selectPatch() {
         setSelected(tabPatch);
         setUnselected(tabAmp);
         setUnselected(tabEffects);
+        setUnselected(tabLive);
+    }
+
+    public void selectLive() {
+        setSelected(tabLive);
+        setUnselected(tabAmp);
+        setUnselected(tabEffects);
+        setUnselected(tabPatch);
     }
 
     private void setSelected(TextView t) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- CHECKED -->
+    <item
+        android:color="@color/accent_orange"
+        android:state_checked="true"/>
+
+    <!-- UNCHECKED -->
+    <item
+        android:color="@color/fg_tertiary"
+        android:alpha="0.4"/>
+
+</selector>
