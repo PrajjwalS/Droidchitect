@@ -7,10 +7,24 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.net.Uri;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import android.os.ParcelFileDescriptor;
+
+import androidx.documentfile.provider.DocumentFile;
+
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class PatchManager {
 
@@ -520,6 +534,425 @@ public class PatchManager {
 
         return value >= min &&
                 value <= max;
+    }
+
+    // Patch Import
+    // =====================================================
+// PATCH IMPORT
+// =====================================================
+
+    public static class ImportSuccess {
+
+        public String fileName;
+
+        public String patchName;
+
+        public ImportSuccess(
+                String fileName,
+                String patchName
+        ) {
+
+            this.fileName = fileName;
+            this.patchName = patchName;
+        }
+    }
+
+    public static class ImportFailure {
+
+        public String fileName;
+
+        public String reason;
+
+        public ImportFailure(
+                String fileName,
+                String reason
+        ) {
+
+            this.fileName = fileName;
+            this.reason = reason;
+        }
+    }
+
+    public static class ImportSummary {
+
+        public List<ImportSuccess> successfulImports =
+                new ArrayList<>();
+
+        public List<ImportFailure> failedImports =
+                new ArrayList<>();
+
+        public String buildSummaryText() {
+
+            StringBuilder builder =
+                    new StringBuilder();
+
+            // =====================================
+            // SUCCESSFUL IMPORTS
+            // =====================================
+
+            builder.append(
+                    "Successfully Imported "
+            );
+
+            builder.append(
+                    successfulImports.size()
+            );
+
+            builder.append(
+                    " Patch(es)\n\n"
+            );
+
+            if (successfulImports.isEmpty()) {
+
+                builder.append("None\n");
+
+            } else {
+
+                for (ImportSuccess success :
+                        successfulImports) {
+
+                    builder.append("• ");
+
+                    builder.append(
+                            success.patchName
+                    );
+
+                    builder.append("\n");
+                }
+            }
+
+            // =====================================
+            // FAILED IMPORTS
+            // =====================================
+
+            builder.append("\n\n");
+
+            builder.append(
+                    "Failed To Import "
+            );
+
+            builder.append(
+                    failedImports.size()
+            );
+
+            builder.append(
+                    " Patch(es)\n\n"
+            );
+
+            if (failedImports.isEmpty()) {
+
+                builder.append("None\n");
+
+            } else {
+
+                for (ImportFailure failure :
+                        failedImports) {
+
+                    builder.append("• ");
+
+                    builder.append(
+                            failure.fileName
+                    );
+
+                    builder.append("\n");
+
+                    builder.append("  ");
+
+                    builder.append(
+                            failure.reason
+                    );
+
+                    builder.append("\n\n");
+                }
+            }
+
+            return builder.toString();
+        }
+    }
+
+
+    private String getFileNameFromUri(
+            Uri uri
+    ) {
+
+        try {
+            String path = uri.getLastPathSegment();
+
+            if (path == null) {
+                return "Unknown File";
+            }
+
+            int cut = path.lastIndexOf('/');
+            if (cut >= 0 && cut < path.length() - 1) {
+                return path.substring(cut + 1
+                );
+            }
+
+            return path;
+
+        } catch (Exception e) {
+            return "Unknown File";
+        }
+    }
+    public ImportSummary importPatchUris(
+            List<Uri> uris
+    ) {
+
+        ImportSummary summary =
+                new ImportSummary();
+
+        for (Uri uri : uris) {
+
+            String fileName =
+                    getFileNameFromUri(uri);
+
+            try {
+
+                InputStream inputStream =
+                        context.getContentResolver()
+                                .openInputStream(uri);
+
+                if (inputStream == null) {
+
+                    summary.failedImports.add(
+                            new ImportFailure(
+                                    fileName,
+                                    "Could not open file"
+                            )
+                    );
+
+                    continue;
+                }
+
+                InputStreamReader reader =
+                        new InputStreamReader(
+                                inputStream
+                        );
+
+                Patch patch =
+                        gson.fromJson(
+                                reader,
+                                Patch.class
+                        );
+
+                reader.close();
+
+                // =====================================
+                // SANITY VALIDATION
+                // =====================================
+
+                if (!isPatchSane(patch)) {
+
+                    summary.failedImports.add(
+                            new ImportFailure(
+                                    fileName,
+                                    "Patch sanity validation failed"
+                            )
+                    );
+
+                    continue;
+                }
+
+                // =====================================
+                // UNIQUE NAME
+                // =====================================
+
+                patch.name =
+                        generateUniquePatchName(
+                                patch.name
+                        );
+
+                // =====================================
+                // SAVE PATCH
+                // =====================================
+
+                boolean success =
+                        savePatch(
+                                patch
+                        );
+
+                if (!success) {
+
+                    summary.failedImports.add(
+                            new ImportFailure(
+                                    fileName,
+                                    "Failed to save patch"
+                            )
+                    );
+
+                    continue;
+                }
+
+                // =====================================
+                // SUCCESS
+                // =====================================
+
+                summary.successfulImports.add(
+                        new ImportSuccess(
+                                fileName,
+                                patch.name
+                        )
+                );
+
+            } catch (Exception e) {
+
+                Log.e(
+                        TAG,
+                        "Import failed",
+                        e
+                );
+
+                summary.failedImports.add(
+                        new ImportFailure(
+                                fileName,
+                                "Invalid or corrupt patch file"
+                        )
+                );
+            }
+        }
+
+        return summary;
+    }
+
+    // Export Patch support
+    public boolean exportAllPatchesZip(
+            Uri folderUri
+    ) {
+
+        try {
+
+            // =====================================
+            // ZIP FILE NAME
+            // =====================================
+
+            String zipName =
+                    "Droidchitect_Patches.zip";
+
+            // =====================================
+            // CREATE FILE
+            // =====================================
+
+            DocumentFile pickedDir =
+                    DocumentFile.fromTreeUri(
+                            context,
+                            folderUri
+                    );
+
+            if (pickedDir == null) {
+                return false;
+            }
+
+            DocumentFile zipFile =
+                    pickedDir.createFile(
+                            "application/zip",
+                            zipName
+                    );
+
+            if (zipFile == null) {
+                return false;
+            }
+
+            // =====================================
+            // OUTPUT STREAM
+            // =====================================
+
+            ParcelFileDescriptor pfd =
+                    context.getContentResolver()
+                            .openFileDescriptor(
+                                    zipFile.getUri(),
+                                    "w"
+                            );
+
+            if (pfd == null) {
+                return false;
+            }
+
+            OutputStream outputStream =
+                    new FileOutputStream(
+                            pfd.getFileDescriptor()
+                    );
+
+            ZipOutputStream zipOut =
+                    new ZipOutputStream(
+                            outputStream
+                    );
+
+            // =====================================
+            // ADD PATCH FILES
+            // =====================================
+
+            File[] files =
+                    getPatchesDirectory()
+                            .listFiles();
+
+            if (files != null) {
+
+                byte[] buffer =
+                        new byte[4096];
+
+                for (File file : files) {
+
+                    if (!file.isFile()) {
+                        continue;
+                    }
+
+                    if (!file.getName()
+                            .endsWith(".json")) {
+
+                        continue;
+                    }
+
+                    FileInputStream fis =
+                            new FileInputStream(
+                                    file
+                            );
+
+                    ZipEntry entry =
+                            new ZipEntry(
+                                    file.getName()
+                            );
+
+                    zipOut.putNextEntry(entry);
+
+                    int len;
+
+                    while ((len = fis.read(buffer)) > 0) {
+
+                        zipOut.write(
+                                buffer,
+                                0,
+                                len
+                        );
+                    }
+
+                    fis.close();
+
+                    zipOut.closeEntry();
+                }
+            }
+
+            // =====================================
+            // CLEANUP
+            // =====================================
+
+            zipOut.close();
+
+            outputStream.close();
+
+            pfd.close();
+
+            return true;
+
+        } catch (Exception e) {
+
+            Log.e(
+                    TAG,
+                    "Failed to export patches",
+                    e
+            );
+
+            return false;
+        }
     }
 
 }

@@ -201,6 +201,11 @@ public class LivePageController {
                 config.goLiveEnabled
         );
 
+        buttonSwitchPatch.setVisibility(
+                config.goLiveEnabled
+                        ? View.VISIBLE
+                        : View.GONE
+        );
         refreshSlots();
     }
 

@@ -173,12 +173,17 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/importPatchButton"
+                    style="@style/ChipButton"
+                    android:text="Import Patches"
+                    android:textAllCaps="false" />
 
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/exportPatchButton"
                     style="@style/ChipButton"
-                    android:text="Export All"
+                    android:text="Export Patches"
                     android:textAllCaps="false" />
 
             </LinearLayout>

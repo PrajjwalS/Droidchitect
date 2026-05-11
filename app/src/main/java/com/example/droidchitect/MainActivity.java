@@ -24,6 +24,9 @@ import com.example.droidchitect.mainUI.ShellController;
 import com.example.droidchitect.patch.PatchManager;
 import com.example.droidchitect.usb.UsbConnectionManager;
 
+import android.content.Intent;
+import android.net.Uri;
+
 public class MainActivity extends AppCompatActivity
         implements UsbConnectionManager.ConnectionListener,
         ShellController.NavigationListener {
@@ -218,6 +221,63 @@ public class MainActivity extends AppCompatActivity
     }
 
     /* -------------------------------------------------------------- */
+
+    /* ------------------ Patch Import Related --------------------- */
+    @Override
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data
+    ) {
+
+        super.onActivityResult(
+                requestCode,
+                resultCode,
+                data
+        );
+
+        if (requestCode == PatchPageController.IMPORT_PATCH_REQUEST &&
+                resultCode == RESULT_OK && data != null &&
+                patchPageController != null) {
+
+            java.util.List<Uri> uris =
+                    new java.util.ArrayList<>();
+
+            if (data.getClipData() != null) {
+
+                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+
+                    uris.add(
+                            data.getClipData()
+                                    .getItemAt(i)
+                                    .getUri()
+                    );
+                }
+
+            } else if (data.getData() != null) {
+
+                uris.add(data.getData());
+            }
+
+            patchPageController.importPatchUris(uris);
+        }
+        if (requestCode == PatchPageController.EXPORT_PATCH_REQUEST &&
+                resultCode == RESULT_OK && data != null &&
+                patchPageController != null) {
+
+            Uri folderUri = data.getData();
+
+            if (folderUri != null) {
+                patchPageController.exportPatches(
+                        folderUri
+                );
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------- */
+
+
 
     /* ------------ MAIN PART (Create and Destroy handlers) -------------- */
     @Override

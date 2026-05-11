@@ -28,6 +28,9 @@ import java.util.List;
 import com.example.droidchitect.patch.PatchDialogs;
 import com.example.droidchitect.live.LiveConfigManager;
 
+import android.app.Activity;
+import android.content.Intent;
+
 public class PatchPageController {
 
     // =========================================================
@@ -66,6 +69,8 @@ public class PatchPageController {
 
     private final MaterialButton exportPatchButton;
 
+    private final MaterialButton importPatchButton;
+
     // =========================================================
     // PATCH LIST
     // =========================================================
@@ -76,6 +81,12 @@ public class PatchPageController {
 
     // Live stuff
     LiveConfigManager liveConfigManager;
+
+    // PATCH IMPORT RELATED
+    public static final int IMPORT_PATCH_REQUEST = 1001;
+
+    // PATCH EXPORT related
+    public static final int EXPORT_PATCH_REQUEST = 1002;
 
     // =========================================================
     // CONSTRUCTOR
@@ -125,6 +136,11 @@ public class PatchPageController {
         exportPatchButton =
                 root.findViewById(
                         R.id.exportPatchButton
+                );
+
+        importPatchButton =
+                root.findViewById(
+                        R.id.importPatchButton
                 );
 
         // =====================================================
@@ -202,10 +218,43 @@ public class PatchPageController {
                 )
         );
 
+        importPatchButton.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            Intent.ACTION_OPEN_DOCUMENT
+                    );
+
+            intent.setType("*/*");
+
+            intent.putExtra(
+                    Intent.EXTRA_ALLOW_MULTIPLE,
+                    true
+            );
+
+            intent.addCategory(
+                    Intent.CATEGORY_OPENABLE
+            );
+
+            ((Activity) root.getContext())
+                    .startActivityForResult(
+                            intent,
+                            IMPORT_PATCH_REQUEST
+                    );
+        });
+
         exportPatchButton.setOnClickListener(v -> {
 
-            // TODO
+            Intent intent =
+                    new Intent(
+                            Intent.ACTION_OPEN_DOCUMENT_TREE
+                    );
 
+            ((Activity) root.getContext())
+                    .startActivityForResult(
+                            intent,
+                            EXPORT_PATCH_REQUEST
+                    );
         });
     }
 
@@ -684,4 +733,89 @@ public class PatchPageController {
         );
     }
 
+
+    // Patch import related
+    public void importPatchUris(
+            java.util.List<android.net.Uri> uris
+    ) {
+        PatchManager.ImportSummary summary =
+                patchManager.importPatchUris(
+                        uris
+                );
+
+        patchManager.reloadCache();
+
+        refreshPatchList();
+
+        androidx.appcompat.app.AlertDialog dialog =
+                new androidx.appcompat.app.AlertDialog.Builder(
+                        root.getContext(),
+                        R.style.ThemeOverlay_Droidchitect_Dialog
+                )
+                        .setTitle(
+                                "Patch Import Summary"
+                        )
+                        .setMessage(
+                                summary.buildSummaryText()
+                        )
+                        .setPositiveButton(
+                                "OK",
+                                null
+                        )
+                        .create();
+
+        dialog.show();
+
+        dialog.getButton(
+                androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE
+        ).setTextColor(
+                root.getContext()
+                        .getResources()
+                        .getColor(R.color.accent_orange)
+        );
+    }
+
+
+    // EXPORT PAGE HANDLER
+
+    public void exportPatches(
+            android.net.Uri folderUri
+    ) {
+
+        boolean success =
+                patchManager.exportAllPatchesZip(
+                        folderUri
+                );
+
+        androidx.appcompat.app.AlertDialog dialog =
+                new androidx.appcompat.app.AlertDialog.Builder(
+                        root.getContext(),
+                        R.style.ThemeOverlay_Droidchitect_Dialog
+                )
+                        .setTitle(
+                                success
+                                        ? "Export Complete"
+                                        : "Export Failed"
+                        )
+                        .setMessage(
+                                success
+                                        ? "All patches exported successfully."
+                                        : "Failed to export patches."
+                        )
+                        .setPositiveButton(
+                                "OK",
+                                null
+                        )
+                        .create();
+
+        dialog.show();
+
+        dialog.getButton(
+                androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE
+        ).setTextColor(
+                root.getContext()
+                        .getResources()
+                        .getColor(R.color.accent_orange)
+        );
+    }
 }
