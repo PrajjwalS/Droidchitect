@@ -12,22 +12,17 @@ import java.io.FileWriter;
 
 public class LiveConfigManager {
 
-    private static final String TAG =
-            "LIVE_CONFIG";
+    private static final String TAG = "LIVE_CONFIG";
 
-    private static final String FILE_NAME =
-            "live_config.json";
+    private static final String FILE_NAME = "live_config.json";
 
     private final Context context;
 
     private final Gson gson;
 
-    public LiveConfigManager(
-            Context context
-    ) {
+    public LiveConfigManager(Context context) {
 
         this.context = context;
-
         gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();
@@ -38,7 +33,6 @@ public class LiveConfigManager {
     // =====================================================
 
     private File getConfigFile() {
-
         return new File(
                 context.getFilesDir(),
                 FILE_NAME
@@ -56,18 +50,12 @@ public class LiveConfigManager {
             File file = getConfigFile();
 
             if (!file.exists()) {
-
                 return new LiveConfig();
             }
 
-            FileReader reader =
-                    new FileReader(file);
+            FileReader reader = new FileReader(file);
 
-            LiveConfig config =
-                    gson.fromJson(
-                            reader,
-                            LiveConfig.class
-                    );
+            LiveConfig config = gson.fromJson(reader, LiveConfig.class);
 
             reader.close();
 
@@ -77,21 +65,14 @@ public class LiveConfigManager {
 
             // SAFETY
             while (config.slots.size() < 8) {
-                config.slots.add(
-                        new LiveSlot()
-                );
+                config.slots.add(new LiveSlot());
             }
 
             return config;
 
         } catch (Exception e) {
 
-            Log.e(
-                    TAG,
-                    "Failed to load config",
-                    e
-            );
-
+            Log.e(TAG, "Failed to load config", e);
             return new LiveConfig();
         }
     }
@@ -100,35 +81,19 @@ public class LiveConfigManager {
     // SAVE
     // =====================================================
 
-    public boolean saveConfig(
-            LiveConfig config
-    ) {
+    public boolean saveConfig(LiveConfig config) {
 
         try {
 
-            FileWriter writer =
-                    new FileWriter(
-                            getConfigFile()
-                    );
-
-            gson.toJson(
-                    config,
-                    writer
-            );
-
+            FileWriter writer = new FileWriter(getConfigFile());
+            gson.toJson(config, writer);
             writer.flush();
             writer.close();
-
             return true;
 
         } catch (Exception e) {
 
-            Log.e(
-                    TAG,
-                    "Failed to save config",
-                    e
-            );
-
+            Log.e(TAG, "Failed to save config", e);
             return false;
         }
     }
@@ -137,8 +102,7 @@ public class LiveConfigManager {
             String deletedFileName
     ) {
 
-        LiveConfig config =
-                loadConfig();
+        LiveConfig config = loadConfig();
 
         boolean changed = false;
 
@@ -162,7 +126,6 @@ public class LiveConfigManager {
         }
 
         if (changed) {
-
             saveConfig(config);
         }
     }

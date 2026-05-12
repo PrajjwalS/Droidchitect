@@ -7,11 +7,6 @@ public class BlackstarDecoder {
 
     private static final String TAG = "DROIDCHITECT_USB_DEBUG";
 
-    private static boolean hasReceivedStateDump = false; // Note that this makes it global kind of a think for only one instance (we have one amp only too.)
-    public static void reset() {
-        hasReceivedStateDump = false;
-    }
-
     private static int u(byte b) {
         return b & 0xFF;
     }

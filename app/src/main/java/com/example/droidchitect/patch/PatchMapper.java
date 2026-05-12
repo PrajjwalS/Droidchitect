@@ -31,9 +31,7 @@ public class PatchMapper {
         // =====================================================
 
         patch.modulationEnabled = state.isModulationEnabled();
-
         patch.modulationType = state.getModulationType();
-
         patch.modulationParam1 = state.getModulationParam1();
         patch.modulationParam2 = state.getModulationParam2();
         patch.modulationParam3 = state.getModulationParam3();
@@ -44,9 +42,7 @@ public class PatchMapper {
         // =====================================================
 
         patch.delayEnabled = state.isDelayEnabled();
-
         patch.delayType = state.getDelayType();
-
         patch.delayLevel = state.getDelayLevel();
         patch.delayFeedback = state.getDelayFeedback();
         patch.delayTime = state.getDelayTime();
@@ -56,9 +52,7 @@ public class PatchMapper {
         // =====================================================
 
         patch.reverbEnabled = state.isReverbEnabled();
-
         patch.reverbType = state.getReverbType();
-
         patch.reverbLevel = state.getReverbLevel();
         patch.reverbSize = state.getReverbSize();
 
@@ -67,12 +61,8 @@ public class PatchMapper {
         // =====================================================
 
         patch.noiseGateEnabled = state.isNoiseGateEnabled();
-
-        patch.noiseGateSensitivity =
-                state.getNoiseGateSensitivity();
-
-        patch.noiseGateAmount =
-                state.getNoiseGateAmount();
+        patch.noiseGateSensitivity = state.getNoiseGateSensitivity();
+        patch.noiseGateAmount = state.getNoiseGateAmount();
 
         return patch;
     }

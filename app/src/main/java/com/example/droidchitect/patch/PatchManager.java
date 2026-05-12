@@ -56,12 +56,8 @@ public class PatchManager {
     // =========================================================
 
     public PatchManager(Context context) {
-
         this.context = context;
-
-        gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
+        gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
 
@@ -71,10 +67,7 @@ public class PatchManager {
 
     private File getPatchesDirectory() {
 
-        File dir = new File(
-                context.getExternalFilesDir(null),
-                PATCH_FOLDER
-        );
+        File dir = new File(context.getExternalFilesDir(null), PATCH_FOLDER);
 
         if (!dir.exists()) {
             dir.mkdirs();
@@ -92,13 +85,9 @@ public class PatchManager {
 
         try {
 
-            String safeName =
-                    patch.name.replaceAll("[^a-zA-Z0-9_-]", "_");
+            String safeName = patch.name.replaceAll("[^a-zA-Z0-9_-]", "_");
 
-            File file = new File(
-                    getPatchesDirectory(),
-                    safeName + ".json"
-            );
+            File file = new File(getPatchesDirectory(), safeName + ".json");
 
             FileWriter writer = new FileWriter(file);
 
@@ -114,7 +103,6 @@ public class PatchManager {
         } catch (Exception e) {
 
             Log.e(TAG, "Failed to save patch", e);
-
             return false;
         }
     }
@@ -128,35 +116,23 @@ public class PatchManager {
 
         try {
 
-            File file = new File(
-                    getPatchesDirectory(),
-                    filename
-            );
+            File file = new File(getPatchesDirectory(), filename);
 
             FileReader reader = new FileReader(file);
 
-            Patch patch =
-                    gson.fromJson(reader, Patch.class);
+            Patch patch = gson.fromJson(reader, Patch.class);
 
             reader.close();
 
             if (!isPatchSane(patch)) {
-
-                Log.e(
-                        TAG,
-                        "Invalid patch schema: " + filename
-                );
-
+                Log.e(TAG, "Invalid patch schema: " + filename);
                 return null;
             }
-
 
             return patch;
 
         } catch (Exception e) {
-
             Log.e(TAG, "Failed to load patch", e);
-
             return null;
         }
     }
@@ -170,8 +146,7 @@ public class PatchManager {
 
         List<String> patches = new ArrayList<>();
 
-        File[] files =
-                getPatchesDirectory().listFiles();
+        File[] files = getPatchesDirectory().listFiles();
 
         if (files == null) {
             return patches;
@@ -179,9 +154,7 @@ public class PatchManager {
 
         for (File file : files) {
 
-            if (file.isFile() &&
-                    file.getName().endsWith(".json")) {
-
+            if (file.isFile() && file.getName().endsWith(".json")) {
                 patches.add(file.getName());
             }
         }
@@ -196,11 +169,7 @@ public class PatchManager {
 
     public boolean deletePatch(String filename) {
 
-        File file = new File(
-                getPatchesDirectory(),
-                filename
-        );
-
+        File file = new File(getPatchesDirectory(), filename);
         return file.delete();
     }
 
@@ -208,12 +177,9 @@ public class PatchManager {
 // GENERATE UNIQUE PATCH NAME
 // =====================================================
 
-    public String generateUniquePatchName(
-            String baseName
-    ) {
+    public String generateUniquePatchName(String baseName) {
         try {
-            if (baseName == null ||
-                    baseName.trim().isEmpty()) {
+            if (baseName == null || baseName.trim().isEmpty()) {
                 baseName = "Imported Patch";
             }
 
@@ -223,13 +189,7 @@ public class PatchManager {
             // CHECK ORIGINAL
             // =============================================
 
-            File originalFile =
-                    new File(
-                            getPatchesDirectory(),
-                            sanitizeFileName(
-                                    baseName
-                            ) + ".json"
-                    );
+            File originalFile = new File(getPatchesDirectory(), sanitizeFileName(baseName) + ".json");
 
             if (!originalFile.exists()) {
                 return baseName;
@@ -243,19 +203,9 @@ public class PatchManager {
 
             while (true) {
 
-                String candidate =
-                        baseName +
-                                " (" +
-                                index +
-                                ")";
+                String candidate = baseName + " (" + index + ")";
 
-                File candidateFile =
-                        new File(
-                                getPatchesDirectory(),
-                                sanitizeFileName(
-                                        candidate
-                                ) + ".json"
-                        );
+                File candidateFile = new File(getPatchesDirectory(), sanitizeFileName(candidate) + ".json");
 
                 if (!candidateFile.exists()) {
                     return candidate;
@@ -269,14 +219,8 @@ public class PatchManager {
             return baseName;
         }
     }
-    private String sanitizeFileName(
-            String name
-    ) {
-
-        return name.replaceAll(
-                "[\\\\/:*?\"<>|]",
-                "_"
-        );
+    private String sanitizeFileName(String name) {
+        return name.replaceAll("[\\\\/:*?\"<>|]", "_");
     }
 
 
@@ -284,37 +228,28 @@ public class PatchManager {
 
         cachedPatches.clear();
 
-        List<String> patchFiles =
-                listPatchFiles();
+        List<String> patchFiles = listPatchFiles();
 
         for (String fileName : patchFiles) {
 
-            Patch patch =
-                    loadPatch(fileName);
+            Patch patch = loadPatch(fileName);
 
             if (patch == null) {
                 continue;
             }
 
-            cachedPatches.add(
-                    new PatchEntry(
-                            patch,
-                            fileName
-                    )
-            );
+            cachedPatches.add(new PatchEntry(patch, fileName));
         }
     }
 
     public List<PatchEntry> getCachedPatches() {
-
         return new ArrayList<>(cachedPatches);
     }
 
 
     // Patch Sanity Related
     private boolean isPatchSane(
-            Patch patch
-    ) {
+            Patch patch) {
 
         if (patch == null) {
             return false;
@@ -330,9 +265,7 @@ public class PatchManager {
         }
     }
 
-    private boolean isPatchSaneV1(
-            Patch patch
-    ) {
+    private boolean isPatchSaneV1(Patch patch) {
 
         try {
 
@@ -420,8 +353,7 @@ public class PatchManager {
             // =============================================
 
             // basic existence touch
-            boolean modulationEnabled =
-                    patch.modulationEnabled;
+            boolean modulationEnabled = patch.modulationEnabled;
 
             if (!inRange(patch.modulationType, 0, 3)) {
                 return false;
@@ -448,8 +380,7 @@ public class PatchManager {
             // =============================================
 
             // basic existence touch
-            boolean delayEnabled =
-                    patch.delayEnabled;
+            boolean delayEnabled = patch.delayEnabled;
 
             if (!inRange(patch.delayType, 0, 3)) {
                 return false;
@@ -472,8 +403,7 @@ public class PatchManager {
             // =============================================
 
             // basic existence touch
-            boolean reverbEnabled =
-                    patch.reverbEnabled;
+            boolean reverbEnabled = patch.reverbEnabled;
 
             if (!inRange(patch.reverbType, 0, 3)) {
                 return false;
@@ -492,22 +422,13 @@ public class PatchManager {
             // =============================================
 
             // basic existence touch
-            boolean noiseGateEnabled =
-                    patch.noiseGateEnabled;
+            boolean noiseGateEnabled = patch.noiseGateEnabled;
 
-            if (!inRange(
-                    patch.noiseGateSensitivity,
-                    0,
-                    127
-            )) {
+            if (!inRange(patch.noiseGateSensitivity, 0, 127)) {
                 return false;
             }
 
-            if (!inRange(
-                    patch.noiseGateAmount,
-                    0,
-                    127
-            )) {
+            if (!inRange(patch.noiseGateAmount, 0, 127)) {
                 return false;
             }
 
@@ -515,25 +436,14 @@ public class PatchManager {
 
         } catch (Exception e) {
 
-            Log.e(
-                    TAG,
-                    "Patch sanity validation failed",
-                    e
-            );
-
+            Log.e(TAG, "Patch sanity validation failed", e);
             return false;
         }
     }
 
 
-    private boolean inRange(
-            int value,
-            int min,
-            int max
-    ) {
-
-        return value >= min &&
-                value <= max;
+    private boolean inRange(int value, int min, int max) {
+        return value >= min && value <= max;
     }
 
     // Patch Import
@@ -547,11 +457,7 @@ public class PatchManager {
 
         public String patchName;
 
-        public ImportSuccess(
-                String fileName,
-                String patchName
-        ) {
-
+        public ImportSuccess(String fileName, String patchName) {
             this.fileName = fileName;
             this.patchName = patchName;
         }
@@ -563,11 +469,7 @@ public class PatchManager {
 
         public String reason;
 
-        public ImportFailure(
-                String fileName,
-                String reason
-        ) {
-
+        public ImportFailure(String fileName, String reason) {
             this.fileName = fileName;
             this.reason = reason;
         }
@@ -575,48 +477,30 @@ public class PatchManager {
 
     public static class ImportSummary {
 
-        public List<ImportSuccess> successfulImports =
-                new ArrayList<>();
+        public List<ImportSuccess> successfulImports = new ArrayList<>();
 
-        public List<ImportFailure> failedImports =
-                new ArrayList<>();
+        public List<ImportFailure> failedImports = new ArrayList<>();
 
         public String buildSummaryText() {
-
-            StringBuilder builder =
-                    new StringBuilder();
+            StringBuilder builder = new StringBuilder();
 
             // =====================================
             // SUCCESSFUL IMPORTS
             // =====================================
 
-            builder.append(
-                    "Successfully Imported "
-            );
+            builder.append("Successfully Imported ");
 
-            builder.append(
-                    successfulImports.size()
-            );
+            builder.append(successfulImports.size());
 
-            builder.append(
-                    " Patch(es)\n\n"
-            );
+            builder.append(" Patch(es)\n\n");
 
             if (successfulImports.isEmpty()) {
-
                 builder.append("None\n");
-
             } else {
 
-                for (ImportSuccess success :
-                        successfulImports) {
-
+                for (ImportSuccess success : successfulImports) {
                     builder.append("• ");
-
-                    builder.append(
-                            success.patchName
-                    );
-
+                    builder.append(success.patchName);
                     builder.append("\n");
                 }
             }
@@ -627,41 +511,22 @@ public class PatchManager {
 
             builder.append("\n\n");
 
-            builder.append(
-                    "Failed To Import "
-            );
+            builder.append("Failed To Import ");
 
-            builder.append(
-                    failedImports.size()
-            );
+            builder.append(failedImports.size());
 
-            builder.append(
-                    " Patch(es)\n\n"
-            );
+            builder.append(" Patch(es)\n\n");
 
             if (failedImports.isEmpty()) {
-
                 builder.append("None\n");
-
             } else {
-
-                for (ImportFailure failure :
-                        failedImports) {
+                for (ImportFailure failure : failedImports) {
 
                     builder.append("• ");
-
-                    builder.append(
-                            failure.fileName
-                    );
-
+                    builder.append(failure.fileName);
                     builder.append("\n");
-
                     builder.append("  ");
-
-                    builder.append(
-                            failure.reason
-                    );
-
+                    builder.append(failure.reason);
                     builder.append("\n\n");
                 }
             }
@@ -671,9 +536,7 @@ public class PatchManager {
     }
 
 
-    private String getFileNameFromUri(
-            Uri uri
-    ) {
+    private String getFileNameFromUri(Uri uri) {
 
         try {
             String path = uri.getLastPathSegment();
@@ -694,46 +557,25 @@ public class PatchManager {
             return "Unknown File";
         }
     }
-    public ImportSummary importPatchUris(
-            List<Uri> uris
-    ) {
+    public ImportSummary importPatchUris(List<Uri> uris) {
 
-        ImportSummary summary =
-                new ImportSummary();
+        ImportSummary summary = new ImportSummary();
 
         for (Uri uri : uris) {
 
-            String fileName =
-                    getFileNameFromUri(uri);
+            String fileName = getFileNameFromUri(uri);
 
             try {
-
-                InputStream inputStream =
-                        context.getContentResolver()
-                                .openInputStream(uri);
+                InputStream inputStream = context.getContentResolver().openInputStream(uri);
 
                 if (inputStream == null) {
-
-                    summary.failedImports.add(
-                            new ImportFailure(
-                                    fileName,
-                                    "Could not open file"
-                            )
-                    );
-
+                    summary.failedImports.add(new ImportFailure(fileName, "Could not open file"));
                     continue;
                 }
 
-                InputStreamReader reader =
-                        new InputStreamReader(
-                                inputStream
-                        );
+                InputStreamReader reader = new InputStreamReader(inputStream);
 
-                Patch patch =
-                        gson.fromJson(
-                                reader,
-                                Patch.class
-                        );
+                Patch patch = gson.fromJson(reader, Patch.class);
 
                 reader.close();
 
@@ -742,14 +584,7 @@ public class PatchManager {
                 // =====================================
 
                 if (!isPatchSane(patch)) {
-
-                    summary.failedImports.add(
-                            new ImportFailure(
-                                    fileName,
-                                    "Patch sanity validation failed"
-                            )
-                    );
-
+                    summary.failedImports.add(new ImportFailure(fileName, "Patch sanity validation failed"));
                     continue;
                 }
 
@@ -757,29 +592,16 @@ public class PatchManager {
                 // UNIQUE NAME
                 // =====================================
 
-                patch.name =
-                        generateUniquePatchName(
-                                patch.name
-                        );
+                patch.name = generateUniquePatchName(patch.name);
 
                 // =====================================
                 // SAVE PATCH
                 // =====================================
 
-                boolean success =
-                        savePatch(
-                                patch
-                        );
+                boolean success = savePatch(patch);
 
                 if (!success) {
-
-                    summary.failedImports.add(
-                            new ImportFailure(
-                                    fileName,
-                                    "Failed to save patch"
-                            )
-                    );
-
+                    summary.failedImports.add(new ImportFailure(fileName, "Failed to save patch"));
                     continue;
                 }
 
@@ -787,27 +609,13 @@ public class PatchManager {
                 // SUCCESS
                 // =====================================
 
-                summary.successfulImports.add(
-                        new ImportSuccess(
-                                fileName,
-                                patch.name
-                        )
-                );
+                summary.successfulImports.add(new ImportSuccess(fileName, patch.name));
 
             } catch (Exception e) {
 
-                Log.e(
-                        TAG,
-                        "Import failed",
-                        e
-                );
+                Log.e(TAG, "Import failed", e);
 
-                summary.failedImports.add(
-                        new ImportFailure(
-                                fileName,
-                                "Invalid or corrupt patch file"
-                        )
-                );
+                summary.failedImports.add(new ImportFailure(fileName, "Invalid or corrupt patch file"));
             }
         }
 
@@ -816,8 +624,7 @@ public class PatchManager {
 
     // Export Patch support
     public boolean exportAllPatchesZip(
-            Uri folderUri
-    ) {
+            Uri folderUri) {
 
         try {
 
@@ -825,28 +632,19 @@ public class PatchManager {
             // ZIP FILE NAME
             // =====================================
 
-            String zipName =
-                    "Droidchitect_Patches.zip";
+            String zipName = "Droidchitect_Patches.zip";
 
             // =====================================
             // CREATE FILE
             // =====================================
 
-            DocumentFile pickedDir =
-                    DocumentFile.fromTreeUri(
-                            context,
-                            folderUri
-                    );
+            DocumentFile pickedDir = DocumentFile.fromTreeUri(context, folderUri);
 
             if (pickedDir == null) {
                 return false;
             }
 
-            DocumentFile zipFile =
-                    pickedDir.createFile(
-                            "application/zip",
-                            zipName
-                    );
+            DocumentFile zipFile = pickedDir.createFile("application/zip", zipName);
 
             if (zipFile == null) {
                 return false;
@@ -856,39 +654,25 @@ public class PatchManager {
             // OUTPUT STREAM
             // =====================================
 
-            ParcelFileDescriptor pfd =
-                    context.getContentResolver()
-                            .openFileDescriptor(
-                                    zipFile.getUri(),
-                                    "w"
-                            );
+            ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(zipFile.getUri(), "w");
 
             if (pfd == null) {
                 return false;
             }
 
-            OutputStream outputStream =
-                    new FileOutputStream(
-                            pfd.getFileDescriptor()
-                    );
+            OutputStream outputStream = new FileOutputStream(pfd.getFileDescriptor());
 
-            ZipOutputStream zipOut =
-                    new ZipOutputStream(
-                            outputStream
-                    );
+            ZipOutputStream zipOut = new ZipOutputStream(outputStream);
 
             // =====================================
             // ADD PATCH FILES
             // =====================================
 
-            File[] files =
-                    getPatchesDirectory()
-                            .listFiles();
+            File[] files = getPatchesDirectory().listFiles();
 
             if (files != null) {
 
-                byte[] buffer =
-                        new byte[4096];
+                byte[] buffer = new byte[4096];
 
                 for (File file : files) {
 
@@ -896,37 +680,23 @@ public class PatchManager {
                         continue;
                     }
 
-                    if (!file.getName()
-                            .endsWith(".json")) {
-
+                    if (!file.getName().endsWith(".json")) {
                         continue;
                     }
 
-                    FileInputStream fis =
-                            new FileInputStream(
-                                    file
-                            );
+                    FileInputStream fis = new FileInputStream(file);
 
-                    ZipEntry entry =
-                            new ZipEntry(
-                                    file.getName()
-                            );
+                    ZipEntry entry = new ZipEntry(file.getName());
 
                     zipOut.putNextEntry(entry);
 
                     int len;
 
                     while ((len = fis.read(buffer)) > 0) {
-
-                        zipOut.write(
-                                buffer,
-                                0,
-                                len
-                        );
+                        zipOut.write(buffer, 0, len);
                     }
 
                     fis.close();
-
                     zipOut.closeEntry();
                 }
             }
@@ -936,21 +706,12 @@ public class PatchManager {
             // =====================================
 
             zipOut.close();
-
             outputStream.close();
-
             pfd.close();
-
             return true;
 
         } catch (Exception e) {
-
-            Log.e(
-                    TAG,
-                    "Failed to export patches",
-                    e
-            );
-
+            Log.e(TAG, "Failed to export patches", e);
             return false;
         }
     }

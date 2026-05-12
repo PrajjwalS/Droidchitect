@@ -27,8 +27,7 @@ public class PatchAdapter
     // DATA
     // =========================================================
 
-    private final List<PatchManager.PatchEntry>
-            entries = new ArrayList<>();
+    private final List<PatchManager.PatchEntry> entries = new ArrayList<>();
 
     // =========================================================
     // DEPENDENCIES
@@ -71,9 +70,7 @@ public class PatchAdapter
     // DATA UPDATE
     // =========================================================
 
-    public void setEntries(
-            List<PatchManager.PatchEntry> newEntries
-    ) {
+    public void setEntries(List<PatchManager.PatchEntry> newEntries) {
 
         entries.clear();
 
@@ -95,26 +92,11 @@ public class PatchAdapter
 
         TextView deleteButton;
 
-        public ViewHolder(
-                @NonNull View itemView
-        ) {
-
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            patchName =
-                    itemView.findViewById(
-                            R.id.patchItemName
-                    );
-
-            loadButton =
-                    itemView.findViewById(
-                            R.id.patchItemLoadButton
-                    );
-
-            deleteButton =
-                    itemView.findViewById(
-                            R.id.patchItemDeleteButton
-                    );
+            patchName = itemView.findViewById(R.id.patchItemName);
+            loadButton = itemView.findViewById(R.id.patchItemLoadButton);
+            deleteButton = itemView.findViewById(R.id.patchItemDeleteButton);
         }
     }
 
@@ -126,17 +108,13 @@ public class PatchAdapter
     @Override
     public ViewHolder onCreateViewHolder(
             @NonNull ViewGroup parent,
-            int viewType
-    ) {
+            int viewType) {
 
-        View view =
-                LayoutInflater.from(
-                        parent.getContext()
-                ).inflate(
+        View view = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.patch_list_item,
                         parent,
                         false
-                );
+                    );
 
         return new ViewHolder(view);
     }
@@ -151,16 +129,13 @@ public class PatchAdapter
             int position
     ) {
 
-        PatchManager.PatchEntry entry =
-                entries.get(position);
+        PatchManager.PatchEntry entry = entries.get(position);
 
         // =====================================================
         // NAME
         // =====================================================
 
-        holder.patchName.setText(
-                "🎛️  " + entry.patch.name
-        );
+        holder.patchName.setText("🎛️  " + entry.patch.name);
 
         // =====================================================
         // LOAD
@@ -176,8 +151,7 @@ public class PatchAdapter
 
                             @Override
                             public void onSuccess(
-                                    Patch appliedPatch
-                            ) {
+                                    Patch appliedPatch) {
 
                                 holder.itemView.post(() -> {
 
@@ -281,7 +255,6 @@ public class PatchAdapter
 
     @Override
     public int getItemCount() {
-
         return entries.size();
     }
 }

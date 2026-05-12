@@ -103,8 +103,6 @@ public class MainActivity extends AppCompatActivity
     public void onAmpStateUpdated() {
 
         runOnUiThread(() -> {
-
-
             if (currentPage == Page.AMP && ampPageController != null) {
                 ampPageController.refresh();
             } else if (currentPage == Page.EFFECTS && effectsPageController != null) {
@@ -160,13 +158,11 @@ public class MainActivity extends AppCompatActivity
         container.addView(pageView);
 
         if (layoutId == R.layout.amp_page) {
-
             currentPage = Page.AMP;
             ampPageController = new AmpPageController(pageView, controller, ampState);
             ampPageController.init();
 
         } else if (layoutId == R.layout.effects_page) {
-
             currentPage = Page.EFFECTS;
             effectsPageController = new EffectsPageController(pageView, ampState, controller);
             effectsPageController.init();
@@ -175,7 +171,6 @@ public class MainActivity extends AppCompatActivity
             currentPage = Page.PATCH;
             patchPageController = new PatchPageController(pageView, ampState, controller, patchManager, liveConfigManager);
             patchPageController.init();
-
         } else if (layoutId == R.layout.live_page) {
             currentPage = Page.LIVE;
             livePageController = new LivePageController(pageView, patchManager, liveConfigManager, controller, ampState);
@@ -204,73 +199,47 @@ public class MainActivity extends AppCompatActivity
     }
 
     // Sets and unsets the Nav Bar , used for Go Live! mode.
-    public void setBottomNavVisible(
-            boolean visible
-    ) {
-
-        View nav =
-                findViewById(
-                        R.id.bottom_nav_bar
-                );
-
-        nav.setVisibility(
-                visible
-                        ? View.VISIBLE
-                        : View.GONE
-        );
+    public void setBottomNavVisible(boolean visible) {
+        View nav = findViewById(R.id.bottom_nav_bar);
+        nav.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     /* -------------------------------------------------------------- */
 
     /* ------------------ Patch Import Related --------------------- */
     @Override
-    protected void onActivityResult(
-            int requestCode,
-            int resultCode,
-            Intent data
-    ) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        super.onActivityResult(
-                requestCode,
-                resultCode,
-                data
-        );
+        super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PatchPageController.IMPORT_PATCH_REQUEST &&
-                resultCode == RESULT_OK && data != null &&
+                resultCode == RESULT_OK &&
+                data != null &&
                 patchPageController != null) {
 
-            java.util.List<Uri> uris =
-                    new java.util.ArrayList<>();
+            java.util.List<Uri> uris = new java.util.ArrayList<>();
 
             if (data.getClipData() != null) {
 
                 for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-
-                    uris.add(
-                            data.getClipData()
-                                    .getItemAt(i)
-                                    .getUri()
-                    );
+                    uris.add(data.getClipData().getItemAt(i).getUri());
                 }
 
             } else if (data.getData() != null) {
-
                 uris.add(data.getData());
             }
 
             patchPageController.importPatchUris(uris);
         }
         if (requestCode == PatchPageController.EXPORT_PATCH_REQUEST &&
-                resultCode == RESULT_OK && data != null &&
+                resultCode == RESULT_OK &&
+                data != null &&
                 patchPageController != null) {
 
             Uri folderUri = data.getData();
 
             if (folderUri != null) {
-                patchPageController.exportPatches(
-                        folderUri
-                );
+                patchPageController.exportPatches(folderUri);
             }
         }
     }
@@ -293,10 +262,7 @@ public class MainActivity extends AppCompatActivity
 
         // Actual UI Start (shell is the TOP layer showing status, and bottom page navigator )
         // Shell never goes out of scope when the app runs.
-        shellController = new ShellController(
-                findViewById(android.R.id.content),
-                this
-        );
+        shellController = new ShellController(findViewById(android.R.id.content), this);
 
         // Initially select the amp page and load it.
         shellController.selectAmp();
@@ -325,7 +291,5 @@ public class MainActivity extends AppCompatActivity
         usbConnectionManager.disconnect();
     }
     /* -------------------------------------------------------------- */
-
-
 
 }

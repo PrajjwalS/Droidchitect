@@ -86,8 +86,7 @@ public class AmpState {
         String voiceName = "Unknown";
 
         if (amplifier.voice >= 0 &&
-                amplifier.voice < BlackstarConstants.VOICES.length) {
-
+            amplifier.voice < BlackstarConstants.VOICES.length) {
             voiceName = BlackstarConstants.VOICES[amplifier.voice];
         }
 
@@ -112,8 +111,7 @@ public class AmpState {
                 break;
         }
 
-        boolean harmonic =
-                effects.modulation.adjust2 == 1;
+        boolean harmonic = effects.modulation.adjust2 == 1;
 
         String modExtra = "";
 

@@ -73,27 +73,17 @@ public class LivePageController {
 
         this.patchManager = patchManager;
 
-        this.liveConfigManager =
-                liveConfigManager;
+        this.liveConfigManager = liveConfigManager;
 
         this.ampController = ampController;
 
         this.ampState = ampState;
 
-        switchGoLive =
-                root.findViewById(
-                        R.id.switchGoLive
-                );
+        switchGoLive = root.findViewById(R.id.switchGoLive);
 
-        liveSlotContainer =
-                root.findViewById(
-                        R.id.liveSlotContainer
-                );
+        liveSlotContainer = root.findViewById(R.id.liveSlotContainer);
 
-        buttonSwitchPatch =
-                root.findViewById(
-                        R.id.buttonSwitchPatch
-                );
+        buttonSwitchPatch = root.findViewById(R.id.buttonSwitchPatch);
     }
 
     // =====================================================
@@ -106,14 +96,10 @@ public class LivePageController {
 
         // always be in non go live mode when we enter this page.
         config.goLiveEnabled = false;
-        liveConfigManager.saveConfig(
-                config
-        );
+        liveConfigManager.saveConfig(config);
 
         setupGoLiveSwitch();
-
         setupSwitchPatchButton();
-
         refreshUI();
     }
 
@@ -140,33 +126,22 @@ public class LivePageController {
     // =====================================================
 
     private void setupSwitchPatchButton() {
-
-        buttonSwitchPatch.setOnClickListener(
-                v -> switchToNextPatch()
-        );
+        buttonSwitchPatch.setOnClickListener(v -> switchToNextPatch());
     }
 
     private void switchToNextPatch() {
 
-        for (int offset = 1;
-             offset <= 8;
-             offset++) {
+        for (int offset = 1; offset <= 8; offset++) {
 
-            int index =
-                    (config.currentSlotIndex + offset)
-                            % 8;
+            int index = (config.currentSlotIndex + offset) % 8;
 
-            LiveSlot slot =
-                    config.slots.get(index);
+            LiveSlot slot = config.slots.get(index);
 
             if (slot.patchFileName == null) {
                 continue;
             }
 
-            Patch patch =
-                    patchManager.loadPatch(
-                            slot.patchFileName
-                    );
+            Patch patch = patchManager.loadPatch(slot.patchFileName);
 
             if (patch == null) {
                 continue;
@@ -174,12 +149,9 @@ public class LivePageController {
 
             config.currentSlotIndex = index;
 
-            liveConfigManager.saveConfig(
-                    config
-            );
+            liveConfigManager.saveConfig(config);
 
             applyPatch(patch);
-
             refreshSlots();
 
             return;
@@ -192,14 +164,9 @@ public class LivePageController {
 
     private void refreshUI() {
 
-        ((MainActivity) root.getContext())
-                .setBottomNavVisible(
-                        !config.goLiveEnabled
-                );
+        ((MainActivity) root.getContext()).setBottomNavVisible(!config.goLiveEnabled);
 
-        switchGoLive.setChecked(
-                config.goLiveEnabled
-        );
+        switchGoLive.setChecked(config.goLiveEnabled);
 
         buttonSwitchPatch.setVisibility(
                 config.goLiveEnabled
@@ -218,41 +185,26 @@ public class LivePageController {
         liveSlotContainer.removeAllViews();
 
         for (int i = 0; i < 8; i++) {
-
             addSlotCard(i);
         }
     }
 
-    private void addSlotCard(
-            int index
-    ) {
+    private void addSlotCard(int index) {
 
-        View card =
-                LayoutInflater.from(
-                        root.getContext()
-                ).inflate(
+        View card = LayoutInflater.from(root.getContext()).inflate(
                         R.layout.live_slot_item,
                         liveSlotContainer,
                         false
-                );
+                    );
 
-        GridLayout.LayoutParams params =
-                new GridLayout.LayoutParams();
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
 
         params.width = 0;
         params.height = 0;
 
-        params.columnSpec =
-                GridLayout.spec(
-                        GridLayout.UNDEFINED,
-                        1f
-                );
+        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
 
-        params.rowSpec =
-                GridLayout.spec(
-                        GridLayout.UNDEFINED,
-                        1f
-                );
+        params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
 
         card.setLayoutParams(params);
 
@@ -260,31 +212,19 @@ public class LivePageController {
         // VIEWS
         // =====================================================
 
-        MaterialCardView liveSlotCard =
-                card.findViewById(
-                        R.id.liveSlotCard
-                );
+        MaterialCardView liveSlotCard = card.findViewById(R.id.liveSlotCard);
 
-        TextView textSlotTitle =
-                card.findViewById(
-                        R.id.textSlotTitle
-                );
+        TextView textSlotTitle = card.findViewById(R.id.textSlotTitle);
 
-        TextView textPatchName =
-                card.findViewById(
-                        R.id.textPatchName
-                );
+        TextView textPatchName = card.findViewById(R.id.textPatchName);
 
         // =====================================================
         // SLOT
         // =====================================================
 
-        LiveSlot slot =
-                config.slots.get(index);
+        LiveSlot slot = config.slots.get(index);
 
-        textSlotTitle.setText(
-                "\uD83C\uDF9B\uFE0F SLOT " + (index + 1)
-        );
+        textSlotTitle.setText("\uD83C\uDF9B\uFE0F SLOT " + (index + 1));
 
         // =====================================================
         // PATCH
@@ -293,24 +233,14 @@ public class LivePageController {
         Patch patch = null;
 
         if (slot.patchFileName != null) {
-
-            patch =
-                    patchManager.loadPatch(
-                            slot.patchFileName
-                    );
+            patch = patchManager.loadPatch(slot.patchFileName);
         }
 
         if (patch != null) {
-
-            textPatchName.setText(
-                    patch.name
-            );
+            textPatchName.setText(patch.name);
 
         } else {
-
-            textPatchName.setText(
-                    "EMPTY"
-            );
+            textPatchName.setText("EMPTY");
         }
 
         // =====================================================
@@ -326,9 +256,7 @@ public class LivePageController {
             // =============================================
 
             if (!config.goLiveEnabled) {
-
                 showPatchPickerDialog(index);
-
                 return;
             }
 
@@ -342,9 +270,7 @@ public class LivePageController {
 
             config.currentSlotIndex = index;
 
-            liveConfigManager.saveConfig(
-                    config
-            );
+            liveConfigManager.saveConfig(config);
 
             applyPatch(finalPatch);
 
@@ -364,13 +290,10 @@ public class LivePageController {
             slot.patchFileName = null;
 
             if (config.currentSlotIndex == index) {
-
                 config.currentSlotIndex = 0;
             }
 
-            liveConfigManager.saveConfig(
-                    config
-            );
+            liveConfigManager.saveConfig(config);
 
             refreshSlots();
 
@@ -398,7 +321,6 @@ public class LivePageController {
             );
 
         } else {
-
             liveSlotCard.setStrokeWidth(0);
         }
 
@@ -406,21 +328,16 @@ public class LivePageController {
         // ADD
         // =====================================================
 
-        liveSlotContainer.addView(
-                card
-        );
+        liveSlotContainer.addView(card);
     }
 
     // =====================================================
     // PATCH PICKER
     // =====================================================
 
-    private void showPatchPickerDialog(
-            int slotIndex
-    ) {
+    private void showPatchPickerDialog(int slotIndex) {
 
-        List<PatchManager.PatchEntry> entries =
-                patchManager.getCachedPatches();
+        List<PatchManager.PatchEntry> entries = patchManager.getCachedPatches();
 
         if (entries.isEmpty()) {
 
@@ -433,13 +350,11 @@ public class LivePageController {
             return;
         }
 
-        String[] names =
-                new String[entries.size()];
+        String[] names = new String[entries.size()];
 
         for (int i = 0; i < entries.size(); i++) {
 
-            names[i] =
-                    entries.get(i).patch.name;
+            names[i] = entries.get(i).patch.name;
         }
 
         AlertDialog dialog =
@@ -504,9 +419,7 @@ public class LivePageController {
     // APPLY PATCH
     // =====================================================
 
-    private void applyPatch(
-            Patch patch
-    ) {
+    private void applyPatch(Patch patch) {
 
         PatchLoader.applyPatch(
                 patch,

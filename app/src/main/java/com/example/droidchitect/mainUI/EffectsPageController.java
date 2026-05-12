@@ -196,15 +196,9 @@ public class EffectsPageController {
     // INIT
     // =========================================================
 
-    private int toKnobProgress(
-            int value,
-            int min,
-            int max
-    ) {
-
-        return (int)Math.round(
-                ((value - min) * 100.0) / (max - min)
-        );
+    private int toKnobProgress(int value, int min, int max)
+    {
+        return (int)Math.round(((value - min) * 100.0) / (max - min));
     }
 
     public void init() {
@@ -250,8 +244,6 @@ public class EffectsPageController {
 
     private void refreshModulationLayout() {
 
-
-
         int type = ampState.getModulationType();
 
         // default everything visible
@@ -267,7 +259,6 @@ public class EffectsPageController {
         // =====================================================
 
         if (type == 0) {
-
             knobMod1.setLabelText("MIX");
             knobMod2.setVisibility(View.GONE);
             knobMod3.setLabelText("DEPTH");
@@ -279,7 +270,6 @@ public class EffectsPageController {
         // =====================================================
 
         else if (type == 1) {
-
             knobMod1.setLabelText("MORPH");
             knobMod2.setLabelText("DEPTH");
             knobMod3.setLabelText("MIX");
@@ -291,13 +281,9 @@ public class EffectsPageController {
         // =====================================================
 
         else if (type == 2) {
-
             knobMod1.setLabelText("SENSE");
-
             knobMod2.setVisibility(View.GONE);
-
             knobMod3.setLabelText("DEPTH");
-
             knobMod4.setVisibility(View.GONE);
         }
 
@@ -307,8 +293,7 @@ public class EffectsPageController {
 
         else if (type == 3) {
 
-            boolean harmonic =
-                    ampState.getModulationParam2() == 1;
+            boolean harmonic = ampState.getModulationParam2() == 1;
 
             switchModHarmonic.setChecked(harmonic);
 
@@ -733,12 +718,8 @@ public class EffectsPageController {
         );
     }
 
-    private void setupKnob(
-            RotaryKnob knob,
-            int min,
-            int max,
-            KnobCallback callback
-    ) {
+    private void setupKnob(RotaryKnob knob, int min,
+                           int max, KnobCallback callback) {
 
         knob.setProgressChangeListener(value -> {
 
@@ -934,12 +915,10 @@ public class EffectsPageController {
     }
 
     private void selectReverbType(Button selected) {
-
         unselectType(typeRoom);
         unselectType(typeHall);
         unselectType(typeSpring);
         unselectType(typePlate);
-
         selectType(selected);
     }
 
@@ -962,9 +941,7 @@ public class EffectsPageController {
 
     private void unselectType(Button button) {
 
-        button.setTextColor(
-                root.getContext().getColor(R.color.text_primary)
-        );
+        button.setTextColor(root.getContext().getColor(R.color.text_primary));
 
         button.setBackgroundTintList(
                 ColorStateList.valueOf(
@@ -978,34 +955,20 @@ public class EffectsPageController {
     // =========================================================
 
     private void selectTab(TextView tab) {
-
-        tab.setTextColor(
-                root.getContext().getColor(R.color.text_primary)
-        );
-
+        tab.setTextColor(root.getContext().getColor(R.color.text_primary));
         tab.setBackgroundResource(R.drawable.nav_selected_bg);
     }
 
     private void unselectTab(TextView tab) {
-
-        tab.setTextColor(
-                root.getContext().getColor(R.color.text_secondary)
-        );
-
-        tab.setBackgroundColor(
-                root.getContext().getColor(android.R.color.transparent)
-        );
+        tab.setTextColor(root.getContext().getColor(R.color.text_secondary));
+        tab.setBackgroundColor(root.getContext().getColor(android.R.color.transparent));
     }
 
     // =========================================================
     // UTILS
     // =========================================================
 
-    private int toAmpValue(
-            int knobProgress,
-            int min,
-            int max
-    ) {
+    private int toAmpValue(int knobProgress, int min, int max) {
 
         return min + (int)Math.round(
                 (knobProgress / 100.0) * (max - min)
@@ -1086,8 +1049,7 @@ public class EffectsPageController {
         // PARAM 3
         // =====================================================
 
-        int mod3Progress =
-                toKnobProgress(ampState.getModulationParam3(), 0, 127);
+        int mod3Progress = toKnobProgress(ampState.getModulationParam3(), 0, 127);
 
         Log.d(
                 "FX_DEBUG",
@@ -1106,8 +1068,7 @@ public class EffectsPageController {
 
         if (type == 0 || type == 1 || type == 3) {
 
-            int mod4Progress =
-                    toKnobProgress(ampState.getModulationParam4(), 0, 127);
+            int mod4Progress = toKnobProgress(ampState.getModulationParam4(), 0, 127);
 
             Log.d(
                     "FX_DEBUG",

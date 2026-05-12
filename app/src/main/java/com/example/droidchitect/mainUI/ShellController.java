@@ -64,32 +64,13 @@ public class ShellController {
     public void setConnected(boolean connected) {
 
         if (connected) {
-
             statusChip.setText("Connected");
-
-            statusChip.setTextColor(
-                    Color.WHITE
-            );
-
-            statusChip.setBackgroundTintList(
-                    ColorStateList.valueOf(
-                            Color.parseColor("#FF7A00")
-                    )
-            );
-
+            statusChip.setTextColor(Color.WHITE);
+            statusChip.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF7A00")));
         } else {
-
             statusChip.setText("Disconnected");
-
-            statusChip.setTextColor(
-                    Color.parseColor("#AAAAAA")
-            );
-
-            statusChip.setBackgroundTintList(
-                    ColorStateList.valueOf(
-                            Color.parseColor("#1F1F1F")
-                    )
-            );
+            statusChip.setTextColor(Color.parseColor("#AAAAAA"));
+            statusChip.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1F1F1F")));
         }
     }
 
@@ -129,8 +110,6 @@ public class ShellController {
 
     private void setUnselected(TextView t) {
         t.setTextColor(root.getContext().getColor(R.color.text_secondary));
-        t.setBackgroundColor(
-                root.getContext().getColor(android.R.color.transparent)
-        );
+        t.setBackgroundColor(root.getContext().getColor(android.R.color.transparent));
     }
 }

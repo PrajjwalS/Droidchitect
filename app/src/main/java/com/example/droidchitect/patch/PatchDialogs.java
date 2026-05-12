@@ -24,44 +24,26 @@ public class PatchDialogs {
             Context context,
             AmpState ampState,
             PatchManager patchManager,
-            SavePatchCallback callback
-    ) {
+            SavePatchCallback callback) {
 
-        View dialogView =
-                LayoutInflater.from(context)
-                        .inflate(
+        View dialogView = LayoutInflater.from(context).inflate(
                                 R.layout.save_patch_dialog,
                                 null
-                        );
+                          );
 
-        EditText editName =
-                dialogView.findViewById(
-                        R.id.editPatchName
-                );
+        EditText editName = dialogView.findViewById(R.id.editPatchName);
 
-        EditText editCreator =
-                dialogView.findViewById(
-                        R.id.editPatchCreator
-                );
+        EditText editCreator = dialogView.findViewById(R.id.editPatchCreator);
 
-        EditText editTags =
-                dialogView.findViewById(
-                        R.id.editPatchTags
-                );
+        EditText editTags = dialogView.findViewById(R.id.editPatchTags);
 
-        EditText editAbout =
-                dialogView.findViewById(
-                        R.id.editPatchAbout
-                );
+        EditText editAbout = dialogView.findViewById(R.id.editPatchAbout);
 
         new MaterialAlertDialogBuilder(
                 context,
-                R.style.ThemeOverlay_Droidchitect_Dialog
-        )
+                R.style.ThemeOverlay_Droidchitect_Dialog)
                 .setTitle("Save Patch")
-
                 .setView(dialogView)
-
                 .setNegativeButton(
                         "Cancel",
                         null
@@ -125,8 +107,7 @@ public class PatchDialogs {
                                 );
                             }
                         }
-                )
-                .show();
+                ).show();
     }
 
     // =========================================================

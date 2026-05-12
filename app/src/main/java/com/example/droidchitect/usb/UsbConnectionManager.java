@@ -264,9 +264,6 @@ public class UsbConnectionManager {
 
         state = ConnectionState.DISCONNECTED;
 
-
-
-
         if (context != null && context.connection != null) {
             context.connection.close();
         }

@@ -114,39 +114,21 @@ public class PatchPageController {
         // CURRENT PATCH UI
         // =====================================================
 
-        currentPatchName =
-                root.findViewById(
-                        R.id.currentPatchName
-                );
+        currentPatchName = root.findViewById(R.id.currentPatchName);
 
-        currentPatchSummary =
-                root.findViewById(
-                        R.id.currentPatchSummary
-                );
+        currentPatchSummary = root.findViewById(R.id.currentPatchSummary);
 
-        currentPatchAbout =
-                root.findViewById(
-                        R.id.currentPatchAbout
-                );
+        currentPatchAbout = root.findViewById(R.id.currentPatchAbout);
 
         // =====================================================
         // BUTTONS
         // =====================================================
 
-        saveCurrentPatchButton =
-                root.findViewById(
-                        R.id.saveCurrentPatchButton
-                );
+        saveCurrentPatchButton = root.findViewById(R.id.saveCurrentPatchButton);
 
-        exportPatchButton =
-                root.findViewById(
-                        R.id.exportPatchButton
-                );
+        exportPatchButton = root.findViewById(R.id.exportPatchButton);
 
-        importPatchButton =
-                root.findViewById(
-                        R.id.importPatchButton
-                );
+        importPatchButton = root.findViewById(R.id.importPatchButton);
 
         // =====================================================
         // PATCH LIST
@@ -162,10 +144,7 @@ public class PatchPageController {
         patchRecyclerView.setItemAnimator(null);
 
         // Patch search filter
-        patchSearchInput =
-                root.findViewById(
-                        R.id.patchSearchInput
-                );
+        patchSearchInput = root.findViewById(R.id.patchSearchInput);
     }
 
     // =========================================================
@@ -230,21 +209,13 @@ public class PatchPageController {
 
         importPatchButton.setOnClickListener(v -> {
 
-            Intent intent =
-                    new Intent(
-                            Intent.ACTION_OPEN_DOCUMENT
-                    );
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
             intent.setType("*/*");
 
-            intent.putExtra(
-                    Intent.EXTRA_ALLOW_MULTIPLE,
-                    true
-            );
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
-            intent.addCategory(
-                    Intent.CATEGORY_OPENABLE
-            );
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
 
             ((Activity) root.getContext())
                     .startActivityForResult(
@@ -255,10 +226,7 @@ public class PatchPageController {
 
         exportPatchButton.setOnClickListener(v -> {
 
-            Intent intent =
-                    new Intent(
-                            Intent.ACTION_OPEN_DOCUMENT_TREE
-                    );
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 
             ((Activity) root.getContext())
                     .startActivityForResult(
@@ -334,13 +302,11 @@ public class PatchPageController {
 
         if (currentPatch == null) {
 
-            String currentPatchNameValue =
-                    ampState.getCurrentPatchName();
+            String currentPatchNameValue = ampState.getCurrentPatchName();
 
             if (currentPatchNameValue != null) {
 
-                for (PatchManager.PatchEntry entry :
-                        patchManager.getCachedPatches()) {
+                for (PatchManager.PatchEntry entry : patchManager.getCachedPatches()) {
 
                     Patch patch = entry.patch;
 
@@ -361,24 +327,13 @@ public class PatchPageController {
         }
 
         if (currentPatch == null) {
-
-            currentPatchName.setText(
-                    "🎛️  Unsaved Patch"
-            );
-
-            currentPatchSummary.setText(
-                    "Current amplifier state"
-            );
-
-            currentPatchAbout.setText(
-                    "Save the current amplifier configuration as a patch."
-            );
-
+            currentPatchName.setText("🎛️  Unsaved Patch");
+            currentPatchSummary.setText("Current amplifier state");
+            currentPatchAbout.setText("Save the current amplifier configuration as a patch.");
             return;
         }
 
-        String title =
-                "🎛️  " + currentPatch.name;
+        String title = "🎛️  " + currentPatch.name;
 
         if (ampState.isPatchDirty()) {
             title += " *";
@@ -386,44 +341,24 @@ public class PatchPageController {
 
         currentPatchName.setText(title);
 
-        currentPatchSummary.setText(
-                buildPatchSummary(currentPatch)
-        );
+        currentPatchSummary.setText(buildPatchSummary(currentPatch));
 
-        if (currentPatch.about != null &&
-                !currentPatch.about.trim().isEmpty()) {
-
-            currentPatchAbout.setText(
-                    currentPatch.about
-            );
-
+        if (currentPatch.about != null && !currentPatch.about.trim().isEmpty()) {
+            currentPatchAbout.setText(currentPatch.about);
         } else {
-
-            currentPatchAbout.setText(
-                    "No description"
-            );
+            currentPatchAbout.setText("No description");
         }
     }
 
     private void toggleCurrentPatchAboutExpanded() {
 
         if (currentPatchAbout.getMaxLines() == 2) {
-
-            currentPatchAbout.setMaxLines(
-                    Integer.MAX_VALUE
-            );
-
-            currentPatchAbout.setEllipsize(
-                    null
-            );
-
+            currentPatchAbout.setMaxLines(Integer.MAX_VALUE);
+            currentPatchAbout.setEllipsize(null);
         } else {
 
             currentPatchAbout.setMaxLines(2);
-
-            currentPatchAbout.setEllipsize(
-                    TextUtils.TruncateAt.END
-            );
+            currentPatchAbout.setEllipsize(TextUtils.TruncateAt.END);
         }
     }
 
@@ -436,22 +371,15 @@ public class PatchPageController {
         patchAdapter.setEntries(entries);
     }
 
-    private List<PatchManager.PatchEntry>
-    getFilteredPatches() {
+    private List<PatchManager.PatchEntry> getFilteredPatches() {
 
-        List<PatchManager.PatchEntry> results =
-                new ArrayList<>();
+        List<PatchManager.PatchEntry> results = new ArrayList<>();
 
-        String query =
-                getSearchQuery();
+        String query = getSearchQuery();
 
-        for (PatchManager.PatchEntry entry :
-                patchManager.getCachedPatches()) {
+        for (PatchManager.PatchEntry entry : patchManager.getCachedPatches()) {
 
-            if (!matchesQuery(
-                    entry.patch,
-                    query
-            )) {
+            if (!matchesQuery(entry.patch, query)) {
                 continue;
             }
 
@@ -475,33 +403,19 @@ public class PatchPageController {
                 .toLowerCase();
     }
 
-    private boolean matchesQuery(
-            Patch patch,
-            String query
-    ) {
+    private boolean matchesQuery(Patch patch, String query) {
 
         if (query.isEmpty()) {
             return true;
         }
 
-        boolean matchesName =
-                patch.name != null &&
-                        patch.name.toLowerCase()
-                                .contains(query);
+        boolean matchesName = patch.name != null && patch.name.toLowerCase().contains(query);
 
-        boolean matchesCreator =
-                patch.creator != null &&
-                        patch.creator.toLowerCase()
-                                .contains(query);
+        boolean matchesCreator = patch.creator != null && patch.creator.toLowerCase().contains(query);
 
-        boolean matchesAbout =
-                patch.about != null &&
-                        patch.about.toLowerCase()
-                                .contains(query);
+        boolean matchesAbout = patch.about != null && patch.about.toLowerCase().contains(query);
 
-        return matchesName ||
-                matchesCreator ||
-                matchesAbout;
+        return matchesName || matchesCreator || matchesAbout;
     }
 
     // =========================================================
@@ -554,18 +468,11 @@ public class PatchPageController {
     // PATCH SUMMARY
     // =========================================================
 
-    private String buildPatchSummary(
-            Patch patch
-    ) {
+    private String buildPatchSummary(Patch patch) {
 
-        List<String> items =
-                new ArrayList<>();
+        List<String> items = new ArrayList<>();
 
-        items.add(
-                BlackstarConstants.VOICES[
-                        patch.voice
-                        ]
-        );
+        items.add(BlackstarConstants.VOICES[patch.voice]);
 
         if (patch.modulationEnabled) {
             items.add("Mod");
@@ -591,13 +498,8 @@ public class PatchPageController {
 
 
     // Patch import related
-    public void importPatchUris(
-            java.util.List<android.net.Uri> uris
-    ) {
-        PatchManager.ImportSummary summary =
-                patchManager.importPatchUris(
-                        uris
-                );
+    public void importPatchUris(java.util.List<android.net.Uri> uris) {
+        PatchManager.ImportSummary summary = patchManager.importPatchUris(uris);
 
         patchManager.reloadCache();
 
@@ -622,9 +524,7 @@ public class PatchPageController {
 
         dialog.show();
 
-        dialog.getButton(
-                androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE
-        ).setTextColor(
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(
                 root.getContext()
                         .getResources()
                         .getColor(R.color.accent_orange)
@@ -634,14 +534,9 @@ public class PatchPageController {
 
     // EXPORT PAGE HANDLER
 
-    public void exportPatches(
-            android.net.Uri folderUri
-    ) {
+    public void exportPatches(android.net.Uri folderUri) {
 
-        boolean success =
-                patchManager.exportAllPatchesZip(
-                        folderUri
-                );
+        boolean success = patchManager.exportAllPatchesZip(folderUri);
 
         androidx.appcompat.app.AlertDialog dialog =
                 new androidx.appcompat.app.AlertDialog.Builder(
@@ -666,12 +561,10 @@ public class PatchPageController {
 
         dialog.show();
 
-        dialog.getButton(
-                androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE
-        ).setTextColor(
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(
                 root.getContext()
                         .getResources()
                         .getColor(R.color.accent_orange)
-        );
+                );
     }
 }

@@ -81,8 +81,7 @@ public class PatchLoader {
 
 // INTERRUPT CHECK
     private static boolean shouldStop() {
-        return Thread.currentThread()
-                .isInterrupted();
+        return Thread.currentThread().isInterrupted();
     }
 
 
@@ -105,9 +104,7 @@ public class PatchLoader {
 
         // add Delay
         try {
-            Thread.sleep(
-                    comm_delay
-            );
+            Thread.sleep(comm_delay);
         } catch (InterruptedException e) {
             return false;
         }
@@ -119,8 +116,7 @@ public class PatchLoader {
             Patch patch,
             AmpController controller,
             AmpState state,
-            int comm_delay
-    ) {
+            int comm_delay) {
 
         int mismatches = 0;
 
@@ -356,8 +352,7 @@ public class PatchLoader {
             Patch patch,
             AmpController controller,
             AmpState ampState,
-            PatchLoadCallback callback)
-    {
+            PatchLoadCallback callback) {
 
         // CANCEL PREVIOUS THREAD if already running
         if (currentPatchThread != null && currentPatchThread.isAlive()) {
@@ -367,8 +362,7 @@ public class PatchLoader {
         // CREATE THREAD
         Thread thread = new Thread(() -> {
 
-            long startTime =
-                    System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
 
             try {
 
@@ -400,9 +394,7 @@ public class PatchLoader {
                     //       Next thread will do that possibly.
 
                     try {
-                        Thread.sleep(
-                                VERIFY_INTERVAL_MS
-                        );
+                        Thread.sleep(VERIFY_INTERVAL_MS);
                     } catch (InterruptedException e) {
                         return;
                     }
@@ -424,16 +416,13 @@ public class PatchLoader {
 
             } finally {
 
-                if (Thread.currentThread() ==
-                        currentPatchThread) {
-
+                if (Thread.currentThread() == currentPatchThread) {
                     currentPatchThread = null;
                 }
             }
         });
 
         currentPatchThread = thread;
-
         thread.start();
     }
 

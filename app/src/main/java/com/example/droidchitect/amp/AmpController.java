@@ -28,9 +28,11 @@ public class AmpController {
     }
 
     // ===== AMP CONTROLS =====
-
     public void setVoice(int voice) {
-        if (voice < 0 || voice > 5) return;
+
+        if (voice < 0 || voice > 5) {
+            return;
+        }
 
         send(BlackstarEncoder.buildVoice(voice));
     }
@@ -96,7 +98,7 @@ public class AmpController {
     }
 
 
-    // ===== EFFECTS =====
+    // ====================== EFFECTS ==============//
 
     // ===== MODULATION =====
 
