@@ -4,11 +4,8 @@ package com.example.droidchitect.mainUI;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -30,6 +27,10 @@ import com.example.droidchitect.live.LiveConfigManager;
 
 import android.app.Activity;
 import android.content.Intent;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.os.Handler;
 
 public class PatchPageController {
 
@@ -75,7 +76,11 @@ public class PatchPageController {
     // PATCH LIST
     // =========================================================
 
-    private final LinearLayout patchListContainer;
+    private final RecyclerView patchRecyclerView;
+    private final PatchAdapter patchAdapter;
+
+    private final Handler searchHandler = new Handler();
+    private Runnable searchRunnable;
 
     private final TextInputEditText patchSearchInput;
 
@@ -147,11 +152,16 @@ public class PatchPageController {
         // PATCH LIST
         // =====================================================
 
-        patchListContainer =
-                root.findViewById(
-                        R.id.patchListContainer
-                );
+        patchRecyclerView = root.findViewById(R.id.patchRecyclerView);
+        patchRecyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        patchAdapter = new PatchAdapter(this, patchManager, controller, ampState, liveConfigManager);
 
+        patchRecyclerView.setAdapter(patchAdapter);
+        patchRecyclerView.setHasFixedSize(true);
+        // Try without the below line .. it adds some animation (but maybe slower with lower end devices)
+        patchRecyclerView.setItemAnimator(null);
+
+        // Patch search filter
         patchSearchInput =
                 root.findViewById(
                         R.id.patchSearchInput
@@ -281,7 +291,20 @@ public class PatchPageController {
                             int count
                     ) {
 
-                        refreshPatchList();
+                        if (searchRunnable != null) {
+
+                            searchHandler.removeCallbacks(
+                                    searchRunnable
+                            );
+                        }
+
+                        searchRunnable = () ->
+                                refreshPatchList();
+
+                        searchHandler.postDelayed(
+                                searchRunnable,
+                                150
+                        );
                     }
 
                     @Override
@@ -409,23 +432,8 @@ public class PatchPageController {
     // =========================================================
 
     private void refreshPatchList() {
-
-        patchListContainer.removeAllViews();
-
-        List<PatchManager.PatchEntry> entries =
-                getFilteredPatches();
-
-        if (entries.isEmpty()) {
-
-            addEmptyState();
-
-            return;
-        }
-
-        for (PatchManager.PatchEntry entry : entries) {
-
-            addPatchCard(entry);
-        }
+        List<PatchManager.PatchEntry> entries = getFilteredPatches();
+        patchAdapter.setEntries(entries);
     }
 
     private List<PatchManager.PatchEntry>
@@ -496,162 +504,10 @@ public class PatchPageController {
                 matchesAbout;
     }
 
-    private void addEmptyState() {
-
-        TextView emptyView =
-                new TextView(
-                        root.getContext()
-                );
-
-        emptyView.setText(
-                "No saved patches"
-        );
-
-        emptyView.setTextSize(14);
-
-        emptyView.setPadding(
-                24,
-                24,
-                24,
-                24
-        );
-
-        emptyView.setGravity(
-                Gravity.CENTER
-        );
-
-        emptyView.setTextColor(
-                root.getResources().getColor(
-                        R.color.text_secondary
-                )
-        );
-
-        patchListContainer.addView(
-                emptyView
-        );
-    }
-
     // =========================================================
     // PATCH CARD
     // =========================================================
 
-    private void addPatchCard(
-            PatchManager.PatchEntry entry
-    ) {
-
-        View card =
-                LayoutInflater.from(
-                        root.getContext()
-                ).inflate(
-                        R.layout.patch_list_item,
-                        patchListContainer,
-                        false
-                );
-
-        // =====================================================
-        // VIEWS
-        // =====================================================
-
-        TextView patchName =
-                card.findViewById(
-                        R.id.patchItemName
-                );
-
-        TextView loadButton =
-                card.findViewById(
-                        R.id.patchItemLoadButton
-                );
-
-        TextView deleteButton =
-                card.findViewById(
-                        R.id.patchItemDeleteButton
-                );
-
-        // =====================================================
-        // DATA
-        // =====================================================
-
-        patchName.setText(
-                "🎛️  " + entry.patch.name
-        );
-
-        // =====================================================
-        // ACTIONS
-        // =====================================================
-
-        loadButton.setOnClickListener(v ->
-                loadPatch(
-                        entry.patch
-                )
-        );
-
-        deleteButton.setOnClickListener(v ->
-                PatchDialogs.showDeleteDialog(
-                        root.getContext(),
-                        patchManager,
-                        entry.patch,
-                        entry.fileName,
-                        success -> {
-
-                            if (success) {
-                                // update currently cached file names
-                                patchManager.reloadCache();
-
-                                // handle live page's configs
-                                liveConfigManager.removeDeletedPatchReferences(
-                                        entry.fileName
-                                );
-
-                                // refresh the patch list
-                                refreshPatchList();
-                                Log.d(
-                                        "PATCH_DELETE",
-                                        "current="
-                                                + ampState.getCurrentPatchName()
-                                                + " deleting="
-                                                + entry.patch.name
-                                );
-
-                                // handle if currently selected patch is
-                                if (entry.patch.name.equals(ampState.getCurrentPatchName())) {
-                                    currentPatch = null;
-                                    ampState.setCurrentPatchName(
-                                            null
-                                    );
-                                    ampState.setPatchDirty(
-                                            false
-                                    );
-                                    refreshCurrentPatchCard();
-                                }
-
-
-
-                                android.widget.Toast.makeText(
-                                        root.getContext(),
-                                        "Patch deleted",
-                                        android.widget.Toast.LENGTH_SHORT
-                                ).show();
-
-                            } else {
-
-                                android.widget.Toast.makeText(
-                                        root.getContext(),
-                                        "Failed to delete patch",
-                                        android.widget.Toast.LENGTH_SHORT
-                                ).show();
-                            }
-                        }
-                )
-        );
-
-        // =====================================================
-        // ADD
-        // =====================================================
-
-        patchListContainer.addView(
-                card
-        );
-    }
 
     private void loadPatch(Patch patch) {
 

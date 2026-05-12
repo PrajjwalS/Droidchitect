@@ -66,20 +66,16 @@
 
         <!-- PATCH LIST -->
 
-        <ScrollView
+        <!-- PATCH LIST -->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/patchRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:fillViewport="true"
-            android:overScrollMode="never">
-
-            <LinearLayout
-                android:id="@+id/patchListContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
-        </ScrollView>
+            android:overScrollMode="never"
+            android:clipToPadding="false"
+            android:paddingBottom="4dp"/>
 
     </LinearLayout>
 
