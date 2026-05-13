@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = 'com.example.droidchitect'
+    namespace = 'com.prajjwals.droidchitect'
     compileSdk 36
 
     defaultConfig {
