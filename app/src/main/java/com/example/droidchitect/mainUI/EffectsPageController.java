@@ -879,8 +879,6 @@ public class EffectsPageController {
                 ampState.setPatchDirty(true);
                 controller.setReverbType(0);
             }
-
-            selectReverbType(typeRoom);
         });
 
         typeHall.setOnClickListener(v -> {
@@ -889,8 +887,6 @@ public class EffectsPageController {
                 ampState.setPatchDirty(true);
                 controller.setReverbType(1);
             }
-
-            selectReverbType(typeHall);
         });
 
         typeSpring.setOnClickListener(v -> {
@@ -900,7 +896,6 @@ public class EffectsPageController {
                 controller.setReverbType(2);
             }
 
-            selectReverbType(typeSpring);
         });
 
         typePlate.setOnClickListener(v -> {
@@ -909,8 +904,6 @@ public class EffectsPageController {
                 ampState.setPatchDirty(true);
                 controller.setReverbType(3);
             }
-
-            selectReverbType(typePlate);
         });
     }
 

@@ -298,6 +298,9 @@ public class PatchPageController {
     // CURRENT PATCH CARD
     // =========================================================
 
+    public void setCurrentPatch(Patch patch) {
+        currentPatch = patch;
+    }
     private void refreshCurrentPatchCard() {
 
         if (currentPatch == null) {

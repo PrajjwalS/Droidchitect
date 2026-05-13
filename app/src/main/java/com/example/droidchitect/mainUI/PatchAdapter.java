@@ -163,6 +163,8 @@ public class PatchAdapter
                                             false
                                     );
 
+                                    controller.setCurrentPatch(appliedPatch);
+
                                     controller.refresh();
 
                                     android.widget.Toast.makeText(
@@ -215,17 +217,10 @@ public class PatchAdapter
                                 );
 
                                 // clear currently selected patch if needed
-                                if (entry.patch.name.equals(
-                                        ampState.getCurrentPatchName()
-                                )) {
-
-                                    ampState.setCurrentPatchName(
-                                            null
-                                    );
-
-                                    ampState.setPatchDirty(
-                                            false
-                                    );
+                                if (entry.patch.name.equals(ampState.getCurrentPatchName())) {
+                                    ampState.setCurrentPatchName(null);
+                                    ampState.setPatchDirty(false);
+                                    controller.setCurrentPatch(null);
                                 }
 
                                 controller.refresh();

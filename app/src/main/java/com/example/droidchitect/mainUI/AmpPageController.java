@@ -127,15 +127,15 @@ public class AmpPageController {
 
         btn.setOnClickListener(v -> {
 
-            for (Button b : all) {
-                b.setBackgroundTintList(
-                        root.getContext().getColorStateList(R.color.bg_secondary)
-                );
-            }
-
-            btn.setBackgroundTintList(
-                    root.getContext().getColorStateList(R.color.accent_orange)
-            );
+//            for (Button b : all) {
+//                b.setBackgroundTintList(
+//                        root.getContext().getColorStateList(R.color.bg_secondary)
+//                );
+//            }
+//
+//            btn.setBackgroundTintList(
+//                    root.getContext().getColorStateList(R.color.accent_orange)
+//            );
 
             if (state.getVoice() != voiceIndex) {
                 state.setPatchDirty(true);
