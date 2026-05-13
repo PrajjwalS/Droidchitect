@@ -163,9 +163,16 @@ public class PatchPageController {
     // =========================================================
 
     private void setupCurrentPatchCard() {
-        currentPatchAbout.setOnClickListener(v ->
-                toggleCurrentPatchAboutExpanded()
-        );
+        root.findViewById(R.id.currentPatchCard).setOnClickListener(v -> {
+
+            if (currentPatch != null) {
+
+                PatchDialogs.showPatchSummaryDialog(
+                        root.getContext(),
+                        currentPatch
+                );
+            }
+        });
     }
 
     private void setupButtons() {

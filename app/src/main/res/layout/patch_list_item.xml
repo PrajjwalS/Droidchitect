@@ -34,7 +34,7 @@
 
         android:textColor="@color/text_primary"
 
-        android:maxLines="1"
+        android:maxLines="2"
 
         android:ellipsize="end" />
 

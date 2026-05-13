@@ -137,6 +137,14 @@ public class PatchAdapter
 
         holder.patchName.setText("🎛️  " + entry.patch.name);
 
+        holder.itemView.setOnClickListener(v ->
+
+                PatchDialogs.showPatchSummaryDialog(
+                        v.getContext(),
+                        entry.patch
+                )
+        );
+
         // =====================================================
         // LOAD
         // =====================================================

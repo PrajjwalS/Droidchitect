@@ -170,4 +170,88 @@ public class PatchDialogs {
         void onDelete(boolean success);
     }
 
+    // PATCH POP UP Summary -- for patch cards and current patch card
+    // this was important because it becomes very difficult to see the
+    // full names and description of long named and described patches
+    public static void showPatchSummaryDialog(
+            Context context,
+            Patch patch
+    ) {
+
+        if (patch == null) {
+            return;
+        }
+
+        StringBuilder message = new StringBuilder();
+
+        // =====================================================
+        // CREATOR
+        // =====================================================
+
+        if (patch.creator != null &&
+                !patch.creator.trim().isEmpty()) {
+
+            message.append("Creator: ")
+                    .append(patch.creator)
+                    .append("\n\n");
+        }
+
+        // =====================================================
+        // TAGS
+        // =====================================================
+
+        if (patch.tags != null &&
+                !patch.tags.isEmpty()) {
+
+            message.append("Tags:\n");
+
+            for (String tag : patch.tags) {
+
+                message.append("• ")
+                        .append(tag)
+                        .append("\n");
+            }
+
+            message.append("\n");
+        }
+
+        // =====================================================
+        // ABOUT
+        // =====================================================
+
+        if (patch.about != null &&
+                !patch.about.trim().isEmpty()) {
+
+            message.append("About:\n\n")
+                    .append(patch.about);
+
+        } else {
+
+            message.append("No description");
+        }
+
+        androidx.appcompat.app.AlertDialog dialog =
+                new androidx.appcompat.app.AlertDialog.Builder(
+                        context,
+                        R.style.ThemeOverlay_Droidchitect_Dialog
+                )
+                        .setTitle(patch.name)
+                        .setMessage(message.toString())
+                        .setPositiveButton(
+                                "OK",
+                                null
+                        )
+                        .create();
+
+        dialog.show();
+
+        dialog.getButton(
+                androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE
+        ).setTextColor(
+                context.getResources().getColor(
+                        R.color.accent_orange
+                )
+        );
+    }
+
 }

@@ -126,17 +126,7 @@ public class AmpPageController {
     private void setVoiceListener(Button btn, Button[] all, int voiceIndex) {
 
         btn.setOnClickListener(v -> {
-
-//            for (Button b : all) {
-//                b.setBackgroundTintList(
-//                        root.getContext().getColorStateList(R.color.bg_secondary)
-//                );
-//            }
-//
-//            btn.setBackgroundTintList(
-//                    root.getContext().getColorStateList(R.color.accent_orange)
-//            );
-
+            
             if (state.getVoice() != voiceIndex) {
                 state.setPatchDirty(true);
                 controller.setVoice(voiceIndex);
