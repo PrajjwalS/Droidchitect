@@ -25,13 +25,25 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
+          echo "storeFile=keystore.jks" >> key.properties
+
       - name: Grant Gradle Execute Permission
         run: chmod +x gradlew
 
-      - name: Build Release APK
+      - name: Build Signed Release APK
         run: ./gradlew assembleRelease
 
       - name: Upload APK To Release
         uses: softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/release/*.apk
+

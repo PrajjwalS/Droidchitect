@@ -2,12 +2,47 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+import java.util.Properties
+import java.io.FileInputStream
+
+def keystoreProperties = new Properties()
+
+def keystorePropertiesFile =
+        rootProject.file("key.properties")
+
+if (keystorePropertiesFile.exists()) {
+
+    keystoreProperties.load(
+            new FileInputStream(
+                    keystorePropertiesFile
+            )
+    )
+}
+
 android {
+
+    signingConfigs {
+
+        release {
+
+            keyAlias keystoreProperties['keyAlias']
+
+            keyPassword keystoreProperties['keyPassword']
+
+            storeFile file(
+                    keystoreProperties['storeFile']
+            )
+
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+
     namespace = 'com.prajjwals.droidchitect'
     compileSdk 36
 
     defaultConfig {
-        applicationId "com.example.droidchitect"
+        applicationId "com.prajjwals.droidchitect"
         minSdk 24
         targetSdk 36
         versionCode 1
@@ -20,6 +55,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
