@@ -16,6 +16,7 @@
         android:theme="@style/Theme.Droidchitect">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:theme="@style/Theme.Droidchitect">
             <intent-filter>

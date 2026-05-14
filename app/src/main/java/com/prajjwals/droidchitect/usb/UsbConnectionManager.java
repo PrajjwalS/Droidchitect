@@ -69,7 +69,7 @@ public class UsbConnectionManager {
             Toast.makeText(
                     contextRef,
                     "Blackstar Amp not found.\nPlug it in and switch it ON.",
-                    Toast.LENGTH_LONG
+                    Toast.LENGTH_SHORT
             ).show();
             Log.d(TAG, "Target device not found.");
             return;
@@ -102,7 +102,7 @@ public class UsbConnectionManager {
             Toast.makeText(
                     contextRef,
                     "Cannot Connect To Amp, Permission Not Granted.",
-                    Toast.LENGTH_LONG
+                    Toast.LENGTH_SHORT
             ).show();
 
             Log.d(TAG, "Permission denied.");
@@ -114,8 +114,8 @@ public class UsbConnectionManager {
     public void handleDeviceDetached() {
         Toast.makeText(
                 contextRef,
-                "Blackstar Amp disconnected.",
-                Toast.LENGTH_LONG
+                "Amp disconnected.",
+                Toast.LENGTH_SHORT
         ).show();
         Log.d(TAG, "Device detached");
         disconnect();
@@ -224,7 +224,7 @@ public class UsbConnectionManager {
         Toast.makeText(
                 contextRef,
                 "Blackstar AMP Connected.",
-                Toast.LENGTH_LONG
+                Toast.LENGTH_SHORT
         ).show();
         Log.d(TAG, "USB CONNECTED");
 
