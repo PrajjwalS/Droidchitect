@@ -50,7 +50,7 @@ Built with a strong focus on:
 
 ## Steps
 
-1. Install The App on your android device
+1. Install The App on your android device (get the latest release signed apk from this repo)
 2. It is all Plug and Play (The app will automatically detect your amp when you plug in via USB port)
 3. Jump To the Feature Section to get tips on how to use all sneaky little features.
 
