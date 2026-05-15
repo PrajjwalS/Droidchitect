@@ -53,13 +53,21 @@ public class BlackstarEncoder {
     }
 
     // ===== VOICE CHANGE =====
+//    public static byte[] buildVoice(int voice) {
+//        return buildParam(
+//                Param.VOICE,
+//                CONTEXT_VOICE,   // IMPORTANT: 0x28
+//                voice
+//        );
+//    }
     public static byte[] buildVoice(int voice) {
         return buildParam(
                 Param.VOICE,
-                CONTEXT_VOICE,   // IMPORTANT: 0x28
+                CONTEXT_PATCH,
                 voice
         );
     }
+
 
     // ===== GAIN =====
     public static byte[] buildGain(int gain) {
