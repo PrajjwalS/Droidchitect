@@ -52,9 +52,10 @@ Built with a strong focus on:
 
 1. Install The App on your android device (get the latest release signed apk from this repo)
 2. It is all Plug and Play (The app will automatically detect your amp when you plug in via USB port)
-   Caveat : When you plug-in - make sure no effects (mod/dly/rev) are all off from hardware
-            The initial state sync does not sync these states so app cannot sync with them otherwise.
-3. Jump To the Feature Section to get tips on how to use all sneaky little features.
+
+       Caveat : When you plug-in - make sure no effects (mod/dly/rev) are all off from hardware
+                The initial state sync does not sync these states so app cannot sync with them otherwise.
+4. Jump To the Feature Section to get tips on how to use all sneaky little features.
 
 Once connected, Droidchitect will begin synchronizing with the amplifier state automatically.
 The app detects usb plugged in and out to check amp status connected/disconnected.
