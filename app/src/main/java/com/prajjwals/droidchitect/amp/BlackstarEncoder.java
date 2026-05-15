@@ -7,11 +7,11 @@ public class BlackstarEncoder {
     private static final int PACKET_SIZE = 64;
 
     // ===== INIT =====
-    //public static byte[] buildInit() {
-    //    byte[] packet = new byte[PACKET_SIZE];
-    //    packet[0] = 0x07;
-    //    return packet;
-    //}
+    public static byte[] buildInit() {
+        byte[] packet = new byte[PACKET_SIZE];
+        packet[0] = 0x07;
+        return packet;
+    }
     public static byte[] buildOutsiderInit() {
         byte[] packet = new byte[64];
 

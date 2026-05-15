@@ -245,6 +245,10 @@ public class UsbConnectionManager {
         // INIT (0x81)
         Log.d(TAG, "Sending Init Message to AMP");
         send(BlackstarEncoder.buildOutsiderInit());
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ignored) {}
+        send(BlackstarEncoder.buildInit());
 
         // wait for sometime to let the AMPstate get fixed.
 
