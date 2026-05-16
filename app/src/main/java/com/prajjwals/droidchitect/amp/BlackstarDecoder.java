@@ -97,6 +97,14 @@ public class BlackstarDecoder {
 
             case Param.MOD_TYPE:
                 state.effects.modulation.type = value;
+
+                // hardware effect-type knob packets carry:
+                // byte[4] = type
+                // byte[5] = adjust1 position
+                if (context == CONTEXT_EFFECT_TYPE && data.length >= 6) {
+                    state.effects.modulation.adjust1 = u(data[5]);
+                }
+
                 break;
 
             case Param.MOD_1:
@@ -122,6 +130,12 @@ public class BlackstarDecoder {
 
             case Param.DELAY_TYPE:
                 state.effects.delay.type = value;
+
+
+                if (context == CONTEXT_EFFECT_TYPE && data.length >= 6) {
+                    state.effects.delay.adjust1 = u(data[5]);
+                }
+
                 break;
 
             case Param.DELAY_FEEDBACK:
@@ -151,6 +165,11 @@ public class BlackstarDecoder {
 
             case Param.REVERB_TYPE:
                 state.effects.reverb.type = value;
+
+                if (context == CONTEXT_EFFECT_TYPE && data.length >= 6) {
+                    state.effects.reverb.adjust1 = u(data[5]);
+                }
+
                 break;
 
             case Param.REVERB_SIZE:
@@ -184,7 +203,10 @@ public class BlackstarDecoder {
 
     private static void parseStateDump(byte[] data, AmpState state) {
 
-        // architect-linux: value = data[paramId + 3]
+        // architect-linux style:
+        // value = data[paramId + 3]
+
+        // ===== Amplifier =====
         state.amplifier.voice     = u(data[Param.VOICE + 3]);
         state.amplifier.gain      = u(data[Param.GAIN + 3]);
         state.amplifier.volume    = u(data[Param.VOLUME + 3]);
@@ -194,5 +216,118 @@ public class BlackstarDecoder {
         state.amplifier.isf       = u(data[Param.ISF + 3]);
         state.amplifier.resonance = u(data[Param.RESONANCE + 3]);
         state.amplifier.presence  = u(data[Param.PRESENCE + 3]);
+
+        // ===== Effects ===== //
+
+
+        // ===== MOD =====
+        state.effects.modulation.enabled = u(data[Param.MOD_SWITCH + 3]) == 1;
+
+        // Hardware effect-type knob encoding:
+        //
+        // high byte = modulation type
+        // low byte  = adjust1 position
+        //
+        // Example:
+        // 0x0000 -> 0x001F = Phaser
+        // 0x0100 -> 0x011F = Chorus/Flanger
+        // etc.
+
+        int modType     = u(data[Param.MOD_TYPE + 3]);
+        int modPosition = u(data[Param.MOD_TYPE + 4]);
+
+        state.effects.modulation.type = modType;
+
+        // IMPORTANT:
+        // hardware effect-type knob controls adjust1
+        //
+        // UI layer later maps:
+        //
+        // Phaser          -> Mix
+        // Chorus/Flanger  -> Morph
+        // Envelope        -> Sens
+        // Tremolo         -> Pitch/Xover
+        //
+        state.effects.modulation.adjust1 = modPosition;
+
+        // Generic modulation params
+        state.effects.modulation.adjust2 = u(data[Param.MOD_2 + 3]);
+        state.effects.modulation.level = u(data[Param.MOD_3 + 3]);
+        state.effects.modulation.rate = u(data[Param.MOD_4 + 3]);
+
+
+
+        // ===== DELAY =====
+        state.effects.delay.enabled = u(data[Param.DELAY_SWITCH + 3]) == 1;
+
+        // Packed delay type encoding:
+        //
+        // high byte = delay type
+        // low byte  = adjust1 position
+        //
+        int delayType     = u(data[Param.DELAY_TYPE + 3]);
+        int delayPosition = u(data[Param.DELAY_TYPE + 4]);
+
+        state.effects.delay.type = delayType;
+
+        // Hardware effect-type knob controls adjust1
+        //
+        // Linear -> Feedback
+        // Analog -> Feedback
+        // Tape   -> Feedback
+        // Multi  -> Feedback
+        //
+        state.effects.delay.adjust1 = delayPosition;
+
+        // Generic delay params
+        state.effects.delay.adjust2 = u(data[Param.DELAY_TONE + 3]);
+        state.effects.delay.level = u(data[Param.DELAY_LEVEL + 3]);
+
+        // Delay time (16-bit)
+        int fine   = u(data[Param.DELAY_TIME + 3]);
+        int coarse = u(data[Param.DELAY_TIME + 4]);
+
+        state.effects.delay.tempo = (coarse << 8) | fine;
+
+
+
+
+
+        // ===== REVERB =====
+        state.effects.reverb.enabled = u(data[Param.REVERB_SWITCH + 3]) == 1;
+
+        // Packed reverb type encoding:
+        //
+        // high byte = reverb type
+        // low byte  = adjust1 position
+        //
+        int reverbType     = u(data[Param.REVERB_TYPE + 3]);
+        int reverbPosition = u(data[Param.REVERB_TYPE + 4]);
+
+        state.effects.reverb.type = reverbType;
+
+        // Hardware effect-type knob controls adjust1
+        //
+        // Room   -> Size
+        // Hall   -> Size
+        // Spring -> Size
+        // Plate  -> Size
+        //
+        state.effects.reverb.adjust1 = reverbPosition;
+
+        // Generic reverb params
+        state.effects.reverb.level = u(data[Param.REVERB_LEVEL + 3]);
+
+
+
+
+        // ===== NOISE GATE =====
+        state.effects.noiseGate.enabled     = u(data[Param.NOISE_GATE_SWITCH + 3]) == 1;
+        state.effects.noiseGate.sensitivity = u(data[Param.NOISE_GATE_SENS + 3]);
+        state.effects.noiseGate.amount      = u(data[Param.NOISE_GATE_AMOUNT + 3]);
+
     }
+
+
+
 }
