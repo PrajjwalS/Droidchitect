@@ -338,4 +338,9 @@ Please raise Issues as you seem them.
    This really isnt a priority bug.
 <Will keep adding more>
 
-
+# TODOs
+1. Currently when applying a patch can be optimized.
+   We can either experiment with the delays we introduced and the algorithm.
+   But one big optmization is that currently we apply patch by sending each param packet.
+   We can imporove this by snooping architect apps patch apply packets (it sends like 4 packets to apply patch)
+   This will be a major improvement.
