@@ -1,6 +1,7 @@
 
 package com.prajjwals.droidchitect.mainUI;
 
+import android.content.res.ColorStateList;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import com.prajjwals.droidchitect.patch.PatchDialogs;
 import com.prajjwals.droidchitect.live.LiveConfigManager;
+import com.prajjwals.droidchitect.patch.PatchMapper;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -72,6 +74,8 @@ public class PatchPageController {
 
     private final MaterialButton importPatchButton;
 
+    private final MaterialButton updateCurrentPatchButton;
+
     // =========================================================
     // PATCH LIST
     // =========================================================
@@ -115,9 +119,7 @@ public class PatchPageController {
         // =====================================================
 
         currentPatchName = root.findViewById(R.id.currentPatchName);
-
         currentPatchSummary = root.findViewById(R.id.currentPatchSummary);
-
         currentPatchAbout = root.findViewById(R.id.currentPatchAbout);
 
         // =====================================================
@@ -125,10 +127,9 @@ public class PatchPageController {
         // =====================================================
 
         saveCurrentPatchButton = root.findViewById(R.id.saveCurrentPatchButton);
-
         exportPatchButton = root.findViewById(R.id.exportPatchButton);
-
         importPatchButton = root.findViewById(R.id.importPatchButton);
+        updateCurrentPatchButton = root.findViewById(R.id.updateCurrentPatchButton);
 
         // =====================================================
         // PATCH LIST
@@ -213,6 +214,8 @@ public class PatchPageController {
                         }
                 )
         );
+
+        updateCurrentPatchButton.setOnClickListener(v -> updateCurrentPatch());
 
         importPatchButton.setOnClickListener(v -> {
 
@@ -324,12 +327,8 @@ public class PatchPageController {
                         continue;
                     }
 
-                    if (currentPatchNameValue.equals(
-                            patch.name
-                    )) {
-
+                    if (currentPatchNameValue.equals(patch.name)) {
                         currentPatch = patch;
-
                         break;
                     }
                 }
@@ -337,9 +336,14 @@ public class PatchPageController {
         }
 
         if (currentPatch == null) {
+            // set empty patch details
             currentPatchName.setText("🎛️  Unsaved Patch");
             currentPatchSummary.setText("Current amplifier state");
             currentPatchAbout.setText("Save the current amplifier configuration as a patch.");
+
+            // disable update current patch button
+            updateUpdatePatchButtonState(false);
+
             return;
         }
 
@@ -358,6 +362,8 @@ public class PatchPageController {
         } else {
             currentPatchAbout.setText("No description");
         }
+        // enable update current patch button
+        updateUpdatePatchButtonState(true);
     }
 
     private void toggleCurrentPatchAboutExpanded() {
@@ -576,5 +582,72 @@ public class PatchPageController {
                         .getResources()
                         .getColor(R.color.accent_orange)
                 );
+    }
+
+
+
+    // UPDATE CURRENT PATCH
+    private void updateCurrentPatch() {
+
+        if (currentPatch == null) {
+            android.widget.Toast.makeText(root.getContext(), "No current patch selected", android.widget.Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String currentPatchName = currentPatch.name;
+
+        Patch updatedPatch = PatchMapper.fromAmpState(ampState);
+
+        // Preserve metadata
+        updatedPatch.name = currentPatch.name;
+        updatedPatch.creator = currentPatch.creator;
+        updatedPatch.about = currentPatch.about;
+        updatedPatch.tags = new ArrayList<>(currentPatch.tags);
+        String fileName = currentPatchName.replaceAll("[^a-zA-Z0-9_-]", "_") + ".json";
+
+        boolean success = patchManager.updatePatch(updatedPatch, fileName);
+
+        if (!success) {
+            android.widget.Toast.makeText(root.getContext(), "Failed to update patch",
+                                          android.widget.Toast.LENGTH_SHORT
+                                          ).show();
+            return;
+        }
+
+        currentPatch = updatedPatch;
+        ampState.setPatchDirty(false);
+        patchManager.reloadCache();
+        refresh();
+        android.widget.Toast.makeText(root.getContext(), "Patch updated", android.widget.Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateUpdatePatchButtonState(boolean enabled) {
+
+        updateCurrentPatchButton.setEnabled(enabled);
+
+        if (enabled) {
+
+            updateCurrentPatchButton.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                            root.getContext().getColor(R.color.fg_tertiary)
+                    )
+            );
+
+            updateCurrentPatchButton.setTextColor(
+                    root.getContext().getColor(R.color.text_primary)
+            );
+
+        } else {
+
+            updateCurrentPatchButton.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                            root.getContext().getColor(R.color.bg_tertiary)
+                    )
+            );
+
+            updateCurrentPatchButton.setTextColor(
+                    root.getContext().getColor(R.color.bg_tertiary)
+            );
+        }
     }
 }

@@ -152,7 +152,14 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 />
-
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/updateCurrentPatchButton"
+                style="@style/ChipButton"
+                android:backgroundTint="@color/fg_tertiary"
+                android:layout_width="match_parent"
+                android:layout_marginTop="4dp"
+                android:text="Update Current Patch"
+                android:textAllCaps="false" />
         </LinearLayout>
     </LinearLayout>
         <!-- ACTION BUTTONS -->
@@ -196,8 +203,9 @@
                 android:backgroundTint="@color/accent_orange"
                 android:text="Save Current Patch"
                 android:textAllCaps="false"
-                android:textColor="@color/text_primary" />
-
+                android:textColor="@color/text_primary"
+                android:hint="Save/Create New Patch with Current Settings"
+                />
         </LinearLayout>
 
 
