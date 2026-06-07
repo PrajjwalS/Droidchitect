@@ -716,4 +716,25 @@ public class PatchManager {
         }
     }
 
+    // Modify or Update Patch
+    public boolean updatePatch(Patch patch, String fileName) {
+
+        try {
+
+            File file = new File(getPatchesDirectory(), fileName);
+            FileWriter writer = new FileWriter(file);
+
+            gson.toJson(patch, writer);
+            writer.flush();
+            writer.close();
+            Log.d(TAG, "Patch updated: " + file.getAbsolutePath());
+
+            return true;
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to update patch", e);
+            return false;
+        }
+    }
+
 }
