@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.prajjwals.droidchitect.amp.*;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class UsbConnectionManager {
 
@@ -17,7 +18,10 @@ public class UsbConnectionManager {
     public static final String ACTION_USB_PERMISSION =
             "com.example.droidchitect.USB_PERMISSION";
     private static final int VENDOR_ID = 0x27D4;
-    private static final int PRODUCT_ID = 0x0013;
+    private static final Set<Integer> SUPPORTED_PRODUCT_IDS = Set.of(
+                    0x0012, // ID:CORE V3
+                    0x0013  // ID:CORE V4
+            );
 
     private final Context contextRef;
     private final UsbManager usbManager;
@@ -134,13 +138,16 @@ public class UsbConnectionManager {
 
     // ===== INTERNAL =====
 
+    private boolean isSupportedBlackstarAmp(UsbDevice device) {
+        return device.getVendorId() == VENDOR_ID
+                && SUPPORTED_PRODUCT_IDS.contains(device.getProductId());
+    }
     private UsbDevice findTargetDevice() {
 
         HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
 
         for (UsbDevice device : deviceList.values()) {
-            if (device.getVendorId() == VENDOR_ID &&
-                    device.getProductId() == PRODUCT_ID) {
+            if (isSupportedBlackstarAmp(device)) {
                 return device;
             }
         }
