@@ -11,6 +11,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+// addings for fix system-bars
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 // import com.example.droidchitect.AmpTester;
 import com.prajjwals.droidchitect.amp.AmpController;
 import com.prajjwals.droidchitect.amp.AmpState;
@@ -247,13 +252,44 @@ public class MainActivity extends AppCompatActivity
     /* ------------------------------------------------------------- */
 
 
-
     /* ------------ MAIN PART (Create and Destroy handlers) -------------- */
+    /* Keep content clear of status/navigation bars  */
+    private void applySystemBarInsets() {
+        // 1. Get the root layout
+        View root = findViewById(R.id.main_root);
+
+        // 2. Get the original padding defined in the XML
+        final int paddingLeft   = root.getPaddingLeft();
+        final int paddingTop    = root.getPaddingTop();
+        final int paddingRight  = root.getPaddingRight();
+        final int paddingBottom = root.getPaddingBottom();
+
+        // 3. Ask Android to notify us once the system bar sizes are known
+        ViewCompat.setOnApplyWindowInsetsListener(root, (view, insets) -> {
+
+            // 4. Get the thickness of the system bars (top, bottom, left, right)
+            Insets bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()          // status bar + navigation bar
+                            | WindowInsetsCompat.Type.displayCutout());     // + camera notch, if any
+
+            // 5. Final padding = original padding + system bar thickness
+            view.setPadding(paddingLeft   + bars.left,
+                    paddingTop    + bars.top,
+                    paddingRight  + bars.right,
+                    paddingBottom + bars.bottom);
+
+            // 6. Insets handled
+            return WindowInsetsCompat.CONSUMED;
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        // fix for system-bars
+        applySystemBarInsets();
 
         // Create USB + Controller FIRST
         usbConnectionManager = new UsbConnectionManager(this, ampState);
